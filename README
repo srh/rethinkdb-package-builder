@@ -1,0 +1,29 @@
+RethinkDB Build Environment and Package Builder
+
+This repo has tools to set up an environment for building RethinkDB,
+and for using that environment to actually build RethinkDB.
+
+Right now, you could run:
+
+    ruby setup.rb
+
+In general we will (at some point) want to support kicking off a mass
+package build for a given rethinkdb git commit.  We also want to
+support kicking off an individual package build for a particular
+(rethinkdb git commit, platform) pair.
+
+Directory structure:
+
+ - rdbcheckout - clones rethinkdb and fetches the biggest external
+   dependencies.  We have this here so we don't have to re-clone and
+   fetch for every platform (a zillion times over).
+
+ - bionic, buster, strech, centos8, et al - dockerfiles for building
+   on specific platforms
+
+In general we want to support different docker versions, and support
+building for a specific RethinkDB checkout, and at some point we will
+get to that.
+
+The creator of this (Sam Hughes <sam@samuelhughes.com>) is a Docker
+n00b, so feel free to second-guess his decisions.
