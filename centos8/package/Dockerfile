@@ -1,4 +1,5 @@
-FROM rdb-centos8-build
+ARG commit
+FROM rdb-centos8-build:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN ln -s "$PWD"/build/release_clang build/release

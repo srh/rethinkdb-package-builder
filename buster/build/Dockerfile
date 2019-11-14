@@ -1,10 +1,11 @@
 FROM rdbcheckout AS priorcheckout
 
 FROM debian:buster
+ARG commit
 
 # General platform dependencies come before any other decision
 RUN apt-get update && apt-get -y dist-upgrade
-RUN apt-get install -y build-essential protobuf-compiler python
+RUN apt-get install -y git build-essential protobuf-compiler python
 RUN apt-get install -y libprotobuf-dev libcurl4-openssl-dev libboost-all-dev
 RUN apt-get install -y libncurses5-dev wget m4 clang libssl-dev
 RUN apt-get install -y debhelper curl
@@ -15,10 +16,7 @@ RUN mkdir /platform
 COPY --from=priorcheckout /rdb /platform
 WORKDIR /platform/rethinkdb
 
-# DISAPPEND: git
-RUN apt-get install -y git
-
-RUN git checkout v2.3.x
+RUN git checkout ${commit}
 RUN ./configure --allow-fetch CXX=clang++
 RUN make clean
 

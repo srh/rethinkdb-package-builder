@@ -1,39 +1,43 @@
-RethinkDB Build Environment and Package Builder
+RethinkDB Mass Package Builder
 
-This repo has tools to set up an environment for building RethinkDB,
-and for using that environment to actually build RethinkDB.
+   This repo has tools for building RethinkDB on a crapload of
+   platforms.  It uses Docker because that's a way to get operating
+   system images and run stuff on them.
 
-Right now, you could run:
+   Right now, you could run:
 
-    ruby setup.rb
+       ruby setup.rb
 
-In general we will (at some point) want to support kicking off a mass
-package build for a given rethinkdb git commit.  We also want to
-support kicking off an individual package build for a particular
-(rethinkdb git commit, platform) pair.
+   In general we will (at some point) want to support kicking off a
+   mass package build for a given rethinkdb git commit.  We also want
+   to support kicking off an individual package build for a particular
+   (rethinkdb git commit, platform) pair.
 
 DIRECTORY STRUCTURE:
 
- - rdbcheckout - clones rethinkdb and fetches the biggest external
-   dependencies.  We have this here so we don't have to re-clone and
-   fetch for every platform (a zillion times over).
+   - rdbcheckout - clones rethinkdb and fetches the biggest external
+     dependencies.  We have this here so we don't have to re-clone and
+     fetch for every platform (a zillion times over).
 
- - bionic, buster, strech, centos8, et al - dockerfiles for building
-   on specific platforms
+     Keeps the checkout in /rdb
 
-In general we want to support different docker versions, and support
-building for a specific RethinkDB checkout, and at some point we will
-get to that.
+   - bionic, buster, strech, centos8, et al - dockerfiles for building
+     on specific platforms
 
-The creator of this (Sam Hughes <sam@samuelhughes.com>) is a Docker
-n00b, so feel free to second-guess his decisions.
+     Copies /rdb from rdbcheckout to /platform, then does its work.
+
+NOTES:
+
+   - The creator of this (Sam Hughes <sam@samuelhughes.com>) is a
+     Docker n00b, so feel free to second-guess his decisions.
 
 SEARCH TERMS:
 
-- "DISAPPEND": A TODO item for a build task that should be moved
-  elsewhere.  But currently it isn't, to avoid re-fetching and
-  re-building.
+   - "DISAPPEND": A TODO item for a build task that should be moved
+     elsewhere.  But currently it isn't, to avoid re-fetching and
+     re-building.
 
-  In general, these Dockerfiles are developed in an append-only
-  manner, because rebuilding images is really slow.  But if and when I
-  have to touch the core file, I'll want to clean up that cruft.
+     In general, these Dockerfiles are developed in an append-only
+     manner, because rebuilding images is really slow.  But if and
+     when I have to touch the core file, I'll want to clean up that
+     cruft.

@@ -1,6 +1,7 @@
 FROM rdbcheckout AS priorcheckout
 
 FROM opensuse/tumbleweed
+ARG commit
 
 # Starting from openSUSE server edition
 RUN zypper -n install patch
@@ -17,7 +18,7 @@ RUN mkdir /platform
 COPY --from=priorcheckout /rdb /platform
 WORKDIR /platform/rethinkdb
 
-RUN git checkout v2.3.x
+RUN git checkout ${commit}
 RUN ./configure --allow-fetch CXX=clang++
 RUN make clean
 

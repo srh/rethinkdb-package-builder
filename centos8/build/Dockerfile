@@ -1,6 +1,7 @@
 FROM rdbcheckout AS priorcheckout
 
 FROM centos:centos8
+ARG commit
 
 # General platform dependencies
 RUN yum upgrade -y
@@ -19,7 +20,7 @@ RUN mkdir /platform
 COPY --from=priorcheckout /rdb /platform
 WORKDIR /platform/rethinkdb
 
-RUN git checkout v2.3.x
+RUN git checkout ${commit}
 RUN ./configure --allow-fetch CXX=clang++
 RUN make clean
 

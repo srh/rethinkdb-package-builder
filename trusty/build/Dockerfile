@@ -1,6 +1,7 @@
 FROM rdbcheckout AS priorcheckout
 
 FROM ubuntu:trusty
+ARG commit
 
 # General platform dependencies come before any other decision
 RUN apt-get update && apt-get -y dist-upgrade
@@ -18,7 +19,7 @@ RUN mkdir /platform
 COPY --from=priorcheckout /rdb /platform
 WORKDIR /platform/rethinkdb
 
-RUN git checkout v2.3.x
+RUN git checkout ${commit}
 RUN ./configure --allow-fetch
 RUN make clean
 

@@ -1,6 +1,7 @@
 FROM rdbcheckout AS priorcheckout
 
 FROM centos:centos7
+ARG commit
 
 # General platform dependencies
 RUN yum upgrade -y
@@ -13,15 +14,13 @@ RUN yum install -y bzip2 patch
 RUN yum install -y perl rubygems ruby-devel rpm-build
 RUN gem install fpm
 
-RUN alternatives --set python /usr/bin/python2
-
 RUN mkdir /platform
 
 # Copy cloned and mostly-fetched rethinkdb directory
 COPY --from=priorcheckout /rdb /platform
 WORKDIR /platform/rethinkdb
 
-RUN git checkout v2.3.x
+RUN git checkout ${commit}
 RUN ./configure --allow-fetch
 RUN make clean
 
