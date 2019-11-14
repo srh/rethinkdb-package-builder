@@ -15,6 +15,9 @@ RUN make clean
 
 # Builds node, unfortunately
 RUN make -j7 fetch
+# DISAPPEND: Uncomment this
+# # Builds external packages
+# RUN make -j7 support
 
 RUN make -j7
 RUN make -j7 DEBUG=1
