@@ -9,6 +9,7 @@ require 'optparse'
 options = {
   :commit => "v2.3.7",
   :support_commit => "v2.3.7",
+  :support => true,
   :builds => true,
   :packages => false,
   :distro => nil,
@@ -23,6 +24,9 @@ parser = OptionParser.new { |opts|
   }
   opts.on("--[no-]builds", "Build builds (default on)") { |b|
     options[:builds] = b
+  }
+  opts.on("--[no-]support", "Build support (default on)") { |s|
+    options[:support] = s
   }
   opts.on("--distro DISTRO", "The distro to build packages for (default all)") { |d|
     if d == "all"
@@ -71,38 +75,39 @@ end
 
 # First build the base image
 Dir.chdir("rdbcheckout") {
-  system "docker build -t rdbcheckout ." or raise "build rdbcheckout fail"
+  system "docker build -t samrhughes/rdbcheckout ." or raise "build rdbcheckout fail"
 }
 
 # Then do system builds
 distros.each { |distro|
   Dir.chdir("#{distro}/system") {
-    system "docker build -t rdb-#{distro}-system ." or raise "build rdb-#{distro}-system fail"
+    system "docker build -t samrhughes/rdb-#{distro}-system ." or raise "build rdb-#{distro}-system fail"
   }
 }
 
-
-# Then do support builds
-distros.each { |distro|
-  Dir.chdir("#{distro}/support") {
-    system "docker build -t rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-support fail"
-  }
-}
-
-if options[:builds]
-  # Then do builds
+if options[:support]
+  # Then do support builds
   distros.each { |distro|
-    Dir.chdir("#{distro}/build") {
-      system "docker build -t rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
+    Dir.chdir("#{distro}/support") {
+      system "docker build -t samrhughes/rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-support fail"
     }
   }
 
-  if options[:packages]
-    # Then build packages
+  if options[:builds]
+    # Then do builds
     distros.each { |distro|
-      Dir.chdir("#{distro}/package") {
-        system "docker build -t rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+      Dir.chdir("#{distro}/build") {
+        system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
       }
     }
+
+    if options[:packages]
+      # Then build packages
+      distros.each { |distro|
+        Dir.chdir("#{distro}/package") {
+          system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+        }
+      }
+    end
   end
 end

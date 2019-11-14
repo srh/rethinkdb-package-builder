@@ -1,5 +1,5 @@
 ARG commit
-FROM rdb-jessie-build:${commit}
+FROM samrhughes/rdb-jessie-build:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

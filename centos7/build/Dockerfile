@@ -1,5 +1,5 @@
 ARG support_commit
-FROM rdb-centos7-support:${support_commit}
+FROM samrhughes/rdb-centos7-support:${support_commit}
 ARG commit
 
 WORKDIR /platform/rethinkdb

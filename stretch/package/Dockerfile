@@ -1,5 +1,5 @@
 ARG commit
-FROM rdb-stretch-build:${commit}
+FROM samrhughes/rdb-stretch-build:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

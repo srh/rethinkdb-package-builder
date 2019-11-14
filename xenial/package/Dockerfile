@@ -1,5 +1,5 @@
 ARG commit
-FROM rdb-xenial-build:${commit}
+FROM samrhughes/rdb-xenial-build:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

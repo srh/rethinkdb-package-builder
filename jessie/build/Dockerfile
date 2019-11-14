@@ -1,5 +1,5 @@
 ARG support_commit
-FROM rdb-jessie-support:${support_commit}
+FROM samrhughes/rdb-jessie-support:${support_commit}
 ARG commit
 
 WORKDIR /platform/rethinkdb

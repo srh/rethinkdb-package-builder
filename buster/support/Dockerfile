@@ -1,4 +1,4 @@
-FROM rdb-buster-system
+FROM samrhughes/rdb-buster-system
 ARG commit
 
 WORKDIR /platform/rethinkdb

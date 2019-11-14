@@ -1,5 +1,5 @@
 ARG support_commit
-FROM rdb-xenial-support:${support_commit}
+FROM samrhughes/rdb-xenial-support:${support_commit}
 ARG commit
 
 WORKDIR /platform/rethinkdb

@@ -1,5 +1,5 @@
 ARG support_commit
-FROM rdb-tumbleweed-support:${support_commit}
+FROM samrhughes/rdb-tumbleweed-support:${support_commit}
 ARG commit
 
 WORKDIR /platform/rethinkdb

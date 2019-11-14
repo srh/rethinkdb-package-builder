@@ -1,4 +1,4 @@
-FROM rdb-eoan-system
+FROM samrhughes/rdb-eoan-system
 ARG commit
 
 WORKDIR /platform/rethinkdb

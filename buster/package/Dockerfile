@@ -1,5 +1,5 @@
 ARG commit
-FROM rdb-buster-build:${commit}
+FROM samrhughes/rdb-buster-build:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

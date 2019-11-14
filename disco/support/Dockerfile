@@ -1,4 +1,4 @@
-FROM rdb-disco-system
+FROM samrhughes/rdb-disco-system
 ARG commit
 
 WORKDIR /platform/rethinkdb

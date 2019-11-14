@@ -1,5 +1,5 @@
 ARG commit
-FROM rdb-trusty-build:${commit}
+FROM samrhughes/rdb-trusty-build:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

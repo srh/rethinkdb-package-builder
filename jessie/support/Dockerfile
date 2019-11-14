@@ -1,4 +1,4 @@
-FROM rdb-jessie-system
+FROM samrhughes/rdb-jessie-system
 ARG commit
 
 WORKDIR /platform/rethinkdb

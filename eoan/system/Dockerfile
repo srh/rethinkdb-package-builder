@@ -1,4 +1,4 @@
-FROM rdbcheckout AS priorcheckout
+FROM samrhughes/rdbcheckout AS priorcheckout
 
 FROM ubuntu:eoan
 
