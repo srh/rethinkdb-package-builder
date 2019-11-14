@@ -4,11 +4,11 @@ FROM debian:stretch
 ARG commit
 
 # General platform dependencies come before any other decision
-RUN apt-get update && apt-get -y dist-upgrade
-RUN apt-get install -y git build-essential protobuf-compiler python
-RUN apt-get install -y libprotobuf-dev libcurl4-openssl-dev libboost-all-dev
-RUN apt-get install -y libncurses5-dev wget m4 clang libssl1.0-dev
-RUN apt-get install -y debhelper curl
+RUN apt-get update && apt-get install -y \
+    git build-essential protobuf-compiler python \
+    libprotobuf-dev libcurl4-openssl-dev libboost-all-dev \
+    libncurses5-dev wget m4 clang libssl1.0-dev \
+    debhelper curl
 
 RUN mkdir /platform
 

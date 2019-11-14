@@ -13,12 +13,34 @@ Dir.chdir("rdbcheckout") {
 commit = "v2.3.7"
 build_args = "--build-arg commit=#{commit}"
 
-Dir.chdir("bionic/build") {
-  system "docker build -t rdb-bionic-build:#{commit} #{build_args} ." or raise "build rdb-bionic-build fail"
+# distros is in order of priority.
+distros = [
+# latest production releases
+  "bionic",
+  "centos8",
+  "buster",
+# past production releases
+  "centos7",
+  "stretch",
+  "jessie",
+  "xenial",
+  "trusty",
+# unimportant releases
+  "eoan",
+  "disco",
+]
+
+
+# First do builds
+distros.each { |distro|
+  Dir.chdir("#{distro}/build") {
+    system "docker build -t rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
+  }
 }
 
-Dir.chdir("bionic/package") {
-  system "docker build -t rdb-bionic-package:#{commit} #{build_args} ." or raise "build rdb-bionic-package fail"
+# Then build packages
+distros.each { |distro|
+  Dir.chdir("#{distro}/package") {
+    system "docker build -t rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+  }
 }
-
-

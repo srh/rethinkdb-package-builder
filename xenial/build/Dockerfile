@@ -4,11 +4,11 @@ FROM ubuntu:xenial
 ARG commit
 
 # General platform dependencies come before any other decision
-RUN apt-get update && apt-get -y dist-upgrade
-RUN apt-get install -y git build-essential protobuf-compiler python
-RUN apt-get install -y libprotobuf-dev libcurl4-openssl-dev libboost-all-dev
-RUN apt-get install -y libncurses5-dev libjemalloc-dev wget m4 g++ libssl-dev
-RUN apt-get install -y debhelper curl
+RUN apt-get update && apt-get install -y \
+    git build-essential protobuf-compiler python \
+    libprotobuf-dev libcurl4-openssl-dev libboost-all-dev \
+    libncurses5-dev libjemalloc-dev wget m4 g++ libssl-dev \
+    debhelper curl
 
 RUN mkdir /platform
 

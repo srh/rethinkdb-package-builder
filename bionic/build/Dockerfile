@@ -5,9 +5,6 @@ FROM rdbcheckout AS priorcheckout
 FROM rdbcheckout
 ARG commit
 
-# DISAPPEND: Move to rdbcheckout.
-RUN apt-get install -y curl
-
 RUN mkdir /platform
 
 COPY --from=priorcheckout /rdb /platform
