@@ -4,6 +4,7 @@ require 'optparse'
 
 options = {
   :commit => "v2.3.7",
+  :builds => true,
   :packages => false,
   :distro => nil,
 }
@@ -14,6 +15,9 @@ parser = OptionParser.new { |opts|
   }
   opts.on("--[no-]packages", "Build packages (default off)") { |p|
     options[:packages] = p
+  }
+  opts.on("--[no-]builds", "Build builds (default on)") { |b|
+    options[:builds] = b
   }
   opts.on("--distro DISTRO", "The distro to build packages for (default all)") { |d|
     puts("distro option ", d)
@@ -73,16 +77,21 @@ distros.each { |distro|
   Dir.chdir("#{distro}/support") {
     system "docker build -t rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-build fail"
   }
-  Dir.chdir("#{distro}/build") {
-    system "docker build -t rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
-  }
 }
 
-if options[:packages]
-  # Then build packages
+if options[:builds]
   distros.each { |distro|
-    Dir.chdir("#{distro}/package") {
-      system "docker build -t rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+    Dir.chdir("#{distro}/build") {
+      system "docker build -t rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
     }
   }
+
+  if options[:packages]
+    # Then build packages
+    distros.each { |distro|
+      Dir.chdir("#{distro}/package") {
+        system "docker build -t rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+      }
+    }
+  end
 end
