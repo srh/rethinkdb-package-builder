@@ -1,5 +1,6 @@
-FROM rdb-trusty-system
-ARG commit
+FROM rdbcheckout AS priorcheckout
+
+FROM ubuntu:xenial
 
 WORKDIR /platform/rethinkdb
 

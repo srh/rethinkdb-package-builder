@@ -2,8 +2,13 @@
 
 require 'optparse'
 
+# To save time and space, we build images for support libs for
+# specific commits like v2.3.7 and b2365be (for v2.4.x), instead of
+# all commits.
+
 options = {
   :commit => "v2.3.7",
+  :support_commit => "v2.3.7",
   :builds => true,
   :packages => false,
   :distro => nil,
@@ -20,25 +25,22 @@ parser = OptionParser.new { |opts|
     options[:builds] = b
   }
   opts.on("--distro DISTRO", "The distro to build packages for (default all)") { |d|
-    puts("distro option ", d)
     if d == "all"
       options[:distro] = nil
     else
       options[:distro] = d
     end
   }
+  opts.on("--v24support", "Build support libs for v2.4.x") { |b|
+    # b2365be is the "Parallelize deb-build" commit in v2.4.x.
+    options[:support_commit] = "b2365bef6"
+  }
 }
 
 parser.parse!
 
-# Building and packaging doesn't exactly belong here...
-
 commit = options[:commit]
-
-# To avoid rebuilding support, we use v2.3.7 and later we'll use some
-# v2.4.x commit to build support libs.
-
-support_commit = "v2.3.7"
+support_commit = options[:support_commit]
 build_args = "--build-arg commit=#{commit} --build-arg support_commit=#{support_commit}"
 build_args_support = "--build-arg commit=#{support_commit}"
 
@@ -72,14 +74,23 @@ Dir.chdir("rdbcheckout") {
   system "docker build -t rdbcheckout ." or raise "build rdbcheckout fail"
 }
 
-# Then do builds
+# Then do system builds
+distros.each { |distro|
+  Dir.chdir("#{distro}/system") {
+    system "docker build -t rdb-#{distro}-system ." or raise "build rdb-#{distro}-system fail"
+  }
+}
+
+
+# Then do support builds
 distros.each { |distro|
   Dir.chdir("#{distro}/support") {
-    system "docker build -t rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-build fail"
+    system "docker build -t rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-support fail"
   }
 }
 
 if options[:builds]
+  # Then do builds
   distros.each { |distro|
     Dir.chdir("#{distro}/build") {
       system "docker build -t rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"

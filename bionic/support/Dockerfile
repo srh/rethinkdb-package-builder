@@ -1,13 +1,6 @@
-FROM rdbcheckout AS priorcheckout
-
-# This is weird, because rdbcheckout is bionic -- we keep the same
-# pattern on other platforms.
-FROM rdbcheckout
+FROM rdb-bionic-system
 ARG commit
 
-RUN mkdir /platform
-
-COPY --from=priorcheckout /rdb /platform
 WORKDIR /platform/rethinkdb
 
 RUN git checkout ${commit}
