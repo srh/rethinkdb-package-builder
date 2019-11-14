@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/srh/rethinkdb
 WORKDIR /rdb/rethinkdb
 
+# DISAPPEND: git checkout v2.3.7
 RUN git checkout v2.3.x
 RUN ./configure --fetch all CXX=clang++
 RUN make -j3 fetch-protobuf fetch-node fetch-boost fetch-v8 fetch-zlib

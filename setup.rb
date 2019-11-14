@@ -30,7 +30,13 @@ parser.parse!
 # Building and packaging doesn't exactly belong here...
 
 commit = options[:commit]
-build_args = "--build-arg commit=#{commit}"
+
+# To avoid rebuilding support, we use v2.3.7 and later we'll use some
+# v2.4.x commit to build support libs.
+
+support_commit = "v2.3.7"
+build_args = "--build-arg commit=#{commit} --build-arg support_commit=#{support_commit}"
+build_args_support = "--build-arg commit=#{support_commit}"
 
 # distros is in order of priority.
 distros = [
@@ -64,6 +70,9 @@ Dir.chdir("rdbcheckout") {
 
 # Then do builds
 distros.each { |distro|
+  Dir.chdir("#{distro}/support") {
+    system "docker build -t rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-build fail"
+  }
   Dir.chdir("#{distro}/build") {
     system "docker build -t rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
   }
