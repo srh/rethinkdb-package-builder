@@ -52,6 +52,9 @@ support_commit = options[:support_commit]
 build_args = "--build-arg commit=#{commit} --build-arg support_commit=#{support_commit}"
 build_args_support = "--build-arg commit=#{support_commit}"
 
+artifact_dir = "artifacts"
+Dir.mkdir(artifact_dir) unless File.directory?(artifact_dir)
+
 # distros is in order of priority.
 distros = [
 # latest production releases
@@ -111,6 +114,9 @@ if options[:support]
         Dir.chdir("#{distro}/package") {
           system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
         }
+
+        # Extract artifacts from the build container
+        system "docker run -v ${PWD}:/opt/mount --rm --entrypoint tar samrhughes/rdb-#{distro}-package:#{commit} -czvf /opt/mount/#{artifact_dir}/#{distro}.tar.gz /platform/rethinkdb/build/packages" or raise "build rdb-#{distro}-package fail"
       }
     end
   end
