@@ -1,0 +1,42 @@
+name: "Build packages"
+
+on:
+  push:
+    branches: 
+      - master
+
+  schedule:
+  - cron: "0 20 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: 
+          - "bionic"
+          - "centos8"
+          - "buster"
+          - "centos7"
+          - "stretch"
+          - "jessie"
+          - "xenial"
+          - "trusty"
+          - "eoan"
+          - "disco"
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.x'
+
+    - name: Build and package for ${{ matrix.distro }}
+      run: |
+        ruby setup.rb --packages --distro ${{ matrix.distro }}
+    - uses: actions/upload-artifact@master
+      name: Stash ${{ matrix.distro }} artifacts
+      with:
+        name: Build artifacts
+        path: artifacts
