@@ -49,7 +49,8 @@ parser.parse!
 
 commit = options[:commit]
 support_commit = options[:support_commit]
-build_args = "--build-arg commit=#{commit} --build-arg support_commit=#{support_commit}"
+package_args = "--build-arg commit=#{commit}"
+build_args = "#{package_args} --build-arg support_commit=#{support_commit}"
 build_args_support = "--build-arg commit=#{support_commit}"
 
 # distros is in order of priority.
@@ -109,7 +110,7 @@ if options[:support]
       # Then build packages
       distros.each { |distro|
         Dir.chdir("#{distro}/package") {
-          system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+          system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} ." or raise "build rdb-#{distro}-package fail"
         }
       }
     end
