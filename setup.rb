@@ -2,6 +2,8 @@
 
 require 'optparse'
 
+# Pro tip: You might have to run "sudo setup.rb ..."
+
 # To save time and space, we build images for support libs for
 # specific commits like v2.3.7 and b2365be (for v2.4.x), instead of
 # all commits.
@@ -71,7 +73,7 @@ distros = [
 ]
 
 if options[:distro] != nil
-  distros = distros.filter { |d| options[:distro] == d }
+  distros.delete_if { |d| options[:distro] != d }
 end
 
 if distros.empty?
