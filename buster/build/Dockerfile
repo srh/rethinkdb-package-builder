@@ -4,7 +4,7 @@ ARG commit
 
 WORKDIR /platform/rethinkdb
 
-RUN git checkout ${commit}
+RUN git fetch && git checkout ${commit}
 RUN ./configure --allow-fetch CXX=clang++
 
 RUN make -j7
