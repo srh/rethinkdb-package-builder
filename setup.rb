@@ -17,7 +17,11 @@ options = {
 parser = OptionParser.new { |opts|
   opts.banner = "Usage: ./setup.rb [options]"
   opts.on("-c", "--commit COMMIT", "The commit to build packages for (default v2.3.7)") { |c|
-    options[:commit] = c
+    if c[0] == "v" || c.length == 9
+      options[:commit] = c
+    else
+      raise "Commit must be \"v...\" or be hash of length 9"
+    end
   }
   opts.on("--[no-]packages", "Build packages (default off)") { |p|
     options[:packages] = p
