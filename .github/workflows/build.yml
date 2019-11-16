@@ -38,5 +38,5 @@ jobs:
     - uses: actions/upload-artifact@master
       name: Stash ${{ matrix.distro }} artifacts
       with:
-        name: Build artifacts
+        name: ${{ matrix.distro }} build artifacts
         path: artifacts
