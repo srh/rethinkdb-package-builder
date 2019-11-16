@@ -2,6 +2,8 @@
 
 require 'optparse'
 
+# Pro tip: You might have to run "sudo setup.rb ..."
+
 # To save time and space, we build images for support libs for
 # specific commits like v2.3.7 and b2365be (for v2.4.x), instead of
 # all commits.
@@ -49,7 +51,8 @@ parser.parse!
 
 commit = options[:commit]
 support_commit = options[:support_commit]
-build_args = "--build-arg commit=#{commit} --build-arg support_commit=#{support_commit}"
+package_args = "--build-arg commit=#{commit}"
+build_args = "#{package_args} --build-arg support_commit=#{support_commit}"
 build_args_support = "--build-arg commit=#{support_commit}"
 
 artifact_dir = "artifacts"
@@ -73,7 +76,7 @@ distros = [
 ]
 
 if options[:distro] != nil
-  distros = distros.filter { |d| options[:distro] == d }
+  distros.delete_if { |d| options[:distro] != d }
 end
 
 if distros.empty?
@@ -112,7 +115,7 @@ if options[:support]
       # Then build packages
       distros.each { |distro|
         Dir.chdir("#{distro}/package") {
-          system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{build_args} ." or raise "build rdb-#{distro}-package fail"
+          system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} ." or raise "build rdb-#{distro}-package fail"
         }
 
         # Extract artifacts from the build container
