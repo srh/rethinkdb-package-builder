@@ -4,14 +4,19 @@ RethinkDB Mass Package Builder
    platforms.  It uses Docker because that's a way to get operating
    system images and run stuff on them.
 
+   You will need Docker Edge (as of Nov. 21 2019) to use the buildx
+   command.  More information is here:
+
+       https://docs.docker.com/docker-for-mac/multi-arch/
+
    Right now, you could run:
 
-       ruby setup.rb
+       docker buildx create --name mybuilder --use
+       docker buildx inspect --bootstrap
+       ruby setup.rb --arch amd64
+       ruby setup.rb --arch arm64
 
-   In general we will (at some point) want to support kicking off a
-   mass package build for a given rethinkdb git commit.  We also want
-   to support kicking off an individual package build for a particular
-   (rethinkdb git commit, platform) pair.
+   You might need to add some sudo's.
 
 DIRECTORY STRUCTURE:
 
