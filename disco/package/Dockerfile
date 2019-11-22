@@ -1,5 +1,5 @@
 ARG commit
-FROM samrhughes/rdb-disco-build:${commit}
+FROM samrhughes/rdb-disco-checkout:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

@@ -8,12 +8,15 @@ require 'optparse'
 # specific commits like v2.3.7 and b2365be (for v2.4.x), instead of
 # all commits.
 
+basedir = Dir.pwd()
+
 options = {
   :commit => "v2.3.7",
   :support_commit => "v2.3.7",
-  :support => true,
-  :builds => true,
+  :support => false,
+  :builds => false,
   :packages => false,
+  :copy => false,
   :distro => nil,
 }
 parser = OptionParser.new { |opts|
@@ -25,14 +28,20 @@ parser = OptionParser.new { |opts|
       raise "Commit must be \"v...\" or be hash of length 9"
     end
   }
+  opts.on("--[no-]support", "Build support (default on)") { |s|
+    options[:support] = s
+  }
   opts.on("--[no-]packages", "Build packages (default off)") { |p|
     options[:packages] = p
+    if p
+      options[:support] = true
+    end
   }
   opts.on("--[no-]builds", "Build builds (default on)") { |b|
     options[:builds] = b
-  }
-  opts.on("--[no-]support", "Build support (default on)") { |s|
-    options[:support] = s
+    if b
+      options[:support] = true
+    end
   }
   opts.on("--distro DISTRO", "The distro to build packages for (default all)") { |d|
     if d == "all"
@@ -40,6 +49,9 @@ parser = OptionParser.new { |opts|
     else
       options[:distro] = d
     end
+  }
+  opts.on("--copy", "Copies packages and such to artifacts/") { |b|
+    options[:copy] = b
   }
   opts.on("--v24support", "Build support libs for v2.4.x") { |b|
     # b2365be is the "Parallelize deb-build" commit in v2.4.x.
@@ -52,8 +64,9 @@ parser.parse!
 commit = options[:commit]
 support_commit = options[:support_commit]
 package_args = "--build-arg commit=#{commit}"
-build_args = "#{package_args} --build-arg support_commit=#{support_commit}"
-build_args_support = "--build-arg commit=#{support_commit}"
+checkout_args = "#{package_args} --build-arg support_commit=#{support_commit}"
+build_args = "#{package_args}"
+support_args = "--build-arg commit=#{support_commit}"
 
 # distros is in order of priority.
 distros = [
@@ -96,24 +109,39 @@ if options[:support]
   # Then do support builds
   distros.each { |distro|
     Dir.chdir("#{distro}/support") {
-      system "docker build -t samrhughes/rdb-#{distro}-support:#{support_commit} #{build_args_support} ." or raise "build rdb-#{distro}-support fail"
+      system "docker build -t samrhughes/rdb-#{distro}-support:#{support_commit} #{support_args} ." or raise "build rdb-#{distro}-support fail"
+    }
+  }
+
+  # Then do checkouts
+  distros.each { |distro|
+    Dir.chdir("#{distro}/checkout") {
+      system "docker build -t samrhughes/rdb-#{distro}-checkout:#{commit} #{checkout_args} ." or raise "build rdb-#{distro}-checkout fail"
     }
   }
 
   if options[:builds]
-    # Then do builds
+    # Then do builds, if we want that.
+    Dir.chdir("build") {
+      distros.each { |distro|
+        system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
+      }
+    }
+  end
+
+  if options[:packages]
+    # And build packages, if we want that.
     distros.each { |distro|
-      Dir.chdir("#{distro}/build") {
-        system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
+      Dir.chdir("#{distro}/package") {
+        system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} ." or raise "build rdb-#{distro}-package fail"
       }
     }
 
-    if options[:packages]
-      # Then build packages
+    if options[:copy]
+      FileUtils.mkdir_p("artifacts/#{distro}")
       distros.each { |distro|
-        Dir.chdir("#{distro}/package") {
-          system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} ." or raise "build rdb-#{distro}-package fail"
-        }
+        # TODO: Check that this is correct for CentOS.
+        system "docker run -v #{basedir}/artifacts:artifacts samrhughes/rdb-#{distro}-package:#{commit} 'cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy #{distro}-package fail"
       }
     end
   end

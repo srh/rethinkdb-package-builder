@@ -1,5 +1,5 @@
 ARG commit
-FROM samrhughes/rdb-centos8-build:${commit}
+FROM samrhughes/rdb-centos8-checkout:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd

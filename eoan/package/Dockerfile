@@ -1,5 +1,5 @@
 ARG commit
-FROM samrhughes/rdb-eoan-build:${commit}
+FROM samrhughes/rdb-eoan-checkout:${commit}
 
 WORKDIR /platform/rethinkdb
 RUN git clean -fd
