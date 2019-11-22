@@ -1,9 +1,14 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-# This is weird, because rdbcheckout is bionic -- we keep the same
-# pattern on other platforms.
-FROM samrhughes/rdbcheckout
+FROM ubuntu:bionic
+
+RUN apt-get update && apt-get install -y \
+    git build-essential protobuf-compiler python \
+    libprotobuf-dev libcurl4-openssl-dev libboost-all-dev \
+    libncurses5-dev libjemalloc-dev wget m4 clang libssl-dev \
+    debhelper curl
 
 RUN mkdir /platform
 
+# Copy cloned and mostly-fetched rethinkdb directory
 COPY --from=priorcheckout /rdb /platform
