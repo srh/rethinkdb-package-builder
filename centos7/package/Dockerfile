@@ -2,5 +2,6 @@ ARG commit
 FROM samrhughes/rdb-centos7-checkout:${commit}
 
 WORKDIR /platform/rethinkdb
-RUN git clean -fd
+# We refetch to get any last-minute tags.
+RUN git fetch --all && git clean -fd
 RUN ./scripts/build-rpm.sh

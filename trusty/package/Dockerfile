@@ -2,7 +2,8 @@ ARG commit
 FROM samrhughes/rdb-trusty-checkout:${commit}
 
 WORKDIR /platform/rethinkdb
-RUN git clean -fd
+# We refetch to get any last-minute tags.
+RUN git fetch --all && git clean -fd
 
 # As a hack, we edit the mk/packaging.mk script to not talk about
 # g++-5.  Because it is wrong.  trusty doesn't have g++-5, its g++ is
