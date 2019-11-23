@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'fileutils'
 require 'optparse'
 
 # Pro tip: You might have to run "sudo setup.rb ..."
@@ -138,10 +139,17 @@ if options[:support]
     }
 
     if options[:copy]
-      FileUtils.mkdir_p("artifacts/#{distro}")
       distros.each { |distro|
-        # TODO: Check that this is correct for CentOS.
-        system "docker run -v #{basedir}/artifacts:artifacts samrhughes/rdb-#{distro}-package:#{commit} 'cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy #{distro}-package fail"
+
+        FileUtils.mkdir_p("artifacts")
+        begin
+          FileUtils.rm_r("artifacts/#{distro}")
+        rescue Errno::ENOENT
+          # do nothing
+        end
+        FileUtils.mkdir_p("artifacts/#{distro}")
+
+        system "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy #{distro}-package fail"
       }
     end
   end
