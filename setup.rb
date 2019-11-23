@@ -51,8 +51,11 @@ parser = OptionParser.new { |opts|
       options[:distro] = d
     end
   }
-  opts.on("--copy", "Copies packages and such to artifacts/") { |b|
-    options[:copy] = b
+  opts.on("--copy-dirs", "Copies packages directory to artifacts/") { |b|
+    options[:copy] = (b ? :dir : false)
+  }
+  opts.on("--copy-pkgs", "Copies debs and rpms to artifacts/pkgs") { |b|
+    options[:copy] = (b ? :pkgs : false)
   }
   opts.on("--v24support", "Build support libs for v2.4.x") { |b|
     # b2365be is the "Parallelize deb-build" commit in v2.4.x.
@@ -138,18 +141,25 @@ if options[:support]
       }
     }
 
-    if options[:copy]
+    if options[:copy] == :dir
+      # TODO: Use rsync for --copy-dirs.  We'd have to install it on
+      # the images though.
       distros.each { |distro|
-
-        FileUtils.mkdir_p("artifacts")
-        begin
-          FileUtils.rm_r("artifacts/#{distro}")
-        rescue Errno::ENOENT
-          # do nothing
-        end
+        puts "Copying dir for distro #{distro}..."
         FileUtils.mkdir_p("artifacts/#{distro}")
 
-        system "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy #{distro}-package fail"
+        system "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy-dirs #{distro}-package fail"
+      }
+      puts "Done copying dirs."
+    elsif options[:copy] == :pkgs
+      distros.each { |distro|
+        puts "Copying deb/rpms for distro #{distro} into one directory..."
+        FileUtils.mkdir_p("artifacts/pkgs")
+
+        cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.deb' -or -name '*.rpm') /artifacts/pkgs\""
+        puts "Executing #{cmd}"
+        system cmd or raise "copy-pkgs #{distro}-package fail"
+        puts "Done copying debs."
       }
     end
   end
