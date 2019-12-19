@@ -19,6 +19,7 @@ options = {
   :packages => false,
   :copy => false,
   :distro => nil,
+  :dist => false,
 }
 parser = OptionParser.new { |opts|
   opts.banner = "Usage: ./setup.rb [options]"
@@ -49,6 +50,12 @@ parser = OptionParser.new { |opts|
       options[:distro] = nil
     else
       options[:distro] = d
+    end
+  }
+  opts.on("--dist", "Builds dist .tgz source file") { |b|
+    options[:dist] = b
+    if b
+      options[:support] = true
     end
   }
   opts.on("--copy-dirs", "Copies packages directory to artifacts/") { |b|
@@ -131,6 +138,20 @@ if options[:support]
         system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
       }
     }
+  end
+
+  if options[:dist]
+    Dir.chdir("dist") {
+      # We only need one dist file, it doesn't depend on OS.  So we pick a recent LTS ubuntu.
+      system "docker build -t samrhughes/rdb-bionic-dist:#{commit} #{build_args} ." or raise "build rdb-bionic-dist fail"
+    }
+
+    puts "Copying dist file into one pkgs directory..."
+    FileUtils.mkdir_p("artifacts/pkgs")
+    cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-bionic-dist:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.tgz') /artifacts/pkgs\""
+    puts "Executing #{cmd}"
+    system cmd or raise "copy-dist fail"
+    puts "Done copying dist."
   end
 
   if options[:packages]
