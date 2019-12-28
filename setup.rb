@@ -20,6 +20,7 @@ options = {
   :copy => false,
   :distro => nil,
   :dist => false,
+  :docs => false,
 }
 parser = OptionParser.new { |opts|
   opts.banner = "Usage: ./setup.rb [options]"
@@ -68,6 +69,9 @@ parser = OptionParser.new { |opts|
     # b2365be is the "Parallelize deb-build" commit in v2.4.x.
     options[:support_commit] = "b2365bef6"
   }
+  opts.on("--docs", "Build docs for master branch") { |b|
+    options[:docs] = b
+  }
 }
 
 parser.parse!
@@ -115,6 +119,19 @@ distros.each { |distro|
     system "docker build -t samrhughes/rdb-#{distro}-system ." or raise "build rdb-#{distro}-system fail"
   }
 }
+
+if options[:docs]
+  Dir.chdir("docs/docscheckout") {
+    system "docker build -t samrhughes/rdb-docs-docscheckout ." or raise "build rdb-docs-docscheckout fail"
+  }
+  Dir.chdir("docs/system") {
+    system "docker build -t samrhughes/rdb-docs-system ." or raise "build rdb-docs-system fail"
+  }
+  docs_commit = "e4be287c2"
+  Dir.chdir("docs/build") {
+    system "docker build -t samrhughes/rdb-docs-build:#{docs_commit} --build-arg commit=${docs_commit} ." or raise "build rdb-docs-build fail"
+  }
+end
 
 if options[:support]
   # Then do support builds
