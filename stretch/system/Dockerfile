@@ -1,6 +1,6 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM debian:stretch
+FROM debian:stretch-slim
 
 # General platform dependencies come before any other decision
 RUN apt-get update && apt-get install -y \
