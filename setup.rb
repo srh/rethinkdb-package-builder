@@ -31,7 +31,7 @@ parser = OptionParser.new { |opts|
       raise "Commit must be \"v...\" or be hash of length 9"
     end
   }
-  opts.on("--[no-]support", "Build support (default on)") { |s|
+  opts.on("--[no-]support", "Build support (default off)") { |s|
     options[:support] = s
   }
   opts.on("--[no-]packages", "Build packages (default off)") { |p|
@@ -40,7 +40,7 @@ parser = OptionParser.new { |opts|
       options[:support] = true
     end
   }
-  opts.on("--[no-]builds", "Build builds (default on)") { |b|
+  opts.on("--[no-]builds", "Build builds (default off)") { |b|
     options[:builds] = b
     if b
       options[:support] = true
