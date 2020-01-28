@@ -1,6 +1,6 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM debian:jessie
+FROM debian:jessie-slim
 
 # General platform dependencies come before any other decision
 RUN apt-get update && apt-get install -y \
