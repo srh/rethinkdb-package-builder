@@ -91,6 +91,7 @@ distros = [
   "buster",
 # past production releases
   "centos7",
+  "centos6",
   "stretch",
   "jessie",
   "xenial",
@@ -150,10 +151,16 @@ if options[:support]
 
   if options[:builds]
     # Then do builds, if we want that.
-    Dir.chdir("build") {
-      distros.each { |distro|
-        system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
-      }
+    distros.each { |distro|
+      if distro == "centos6"
+        Dir.chdir("#{distro}/build") {
+          system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
+        }
+      else
+        Dir.chdir("build") {
+          system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
+        }
+      end
     }
   end
 
