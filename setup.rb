@@ -98,7 +98,7 @@ distros = [
   "trusty",
 # unimportant releases
   "eoan",
-  "disco",
+#  "disco",
 ]
 
 if options[:distro] != nil
