@@ -200,11 +200,18 @@ if options[:support]
       distros.each { |distro|
         puts "Copying deb/rpms for distro #{distro} into one directory..."
         FileUtils.mkdir_p("artifacts/pkgs")
+        FileUtils.mkdir("artifacts/pkg_stage")
 
-        cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.deb' -or -name '*.rpm') /artifacts/pkgs\""
+        cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.deb' -or -name '*.rpm') /artifacts/pkg_stage\""
         puts "Executing #{cmd}"
         system cmd or raise "copy-pkgs #{distro}-package fail"
-        puts "Done copying debs."
+        Dir.glob("artifacts/pkg_stage/*").each { |ent|
+          newname = File.basename(ent).gsub(/\.rpm$/, ".#{distro}.rpm")
+          FileUtils.mv(ent, "artifacts/pkgs/#{newname}")
+        }
+
+        FileUtils.rmdir("artifacts/pkg_stage")
+        puts "Done copying packages."
       }
     end
   end
