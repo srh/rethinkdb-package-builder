@@ -5,9 +5,6 @@ WORKDIR /platform/rethinkdb
 
 RUN git checkout ${commit}
 
-# TODO: Move to system, of course.
-RUN pacman -Syu --noconfirm make
-
 RUN ./configure --allow-fetch CXX=clang++
 RUN make clean
 
