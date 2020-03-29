@@ -102,7 +102,12 @@ distros = [
 ]
 
 if options[:distro] != nil
-  distros.delete_if { |d| options[:distro] != d }
+  if options[:distro] == "archlinux"
+    # We don't yet implement package builds for archlinux, we don't want the all-distros option to fail.
+    distros = ["archlinux"]
+  else
+    distros.delete_if { |d| options[:distro] != d }
+  end
 end
 
 if distros.empty?

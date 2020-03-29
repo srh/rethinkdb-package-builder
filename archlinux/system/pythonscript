@@ -1,0 +1,9 @@
+#!/bin/bash
+script=$(readlink -f -- "$1")
+case "$script" in (/platform/*)
+    exec python2 "$@"
+    ;;
+esac
+
+exec python3 "$@"
+
