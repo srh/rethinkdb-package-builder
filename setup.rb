@@ -102,9 +102,9 @@ distros = [
 ]
 
 if options[:distro] != nil
-  if options[:distro] == "archlinux"
-    # We don't yet implement package builds for archlinux, we don't want the all-distros option to fail.
-    distros = ["archlinux"]
+  if ["archlinux", "alpine"].include?(options[:distro])
+    # We don't yet implement package builds for archlinux/alpine, we don't want the all-distros option to fail.
+    distros = [options[:distro]]
   else
     distros.delete_if { |d| options[:distro] != d }
   end
