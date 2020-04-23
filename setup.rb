@@ -88,10 +88,11 @@ distros = [
 # latest production releases
   "bionic",
   "centos8",
-  "buster",
+  "focal",
 # past production releases
   "centos7",
   "centos6",
+  "buster",
   "stretch",
   "jessie",
   "xenial",
