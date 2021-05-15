@@ -6,12 +6,20 @@ RethinkDB Mass Package Builder
 
    Right now, you could run:
 
+       # Mac
        ruby setup.rb
+
+       # Linux
+       sudo ruby setup.rb
 
    In general we will (at some point) want to support kicking off a
    mass package build for a given rethinkdb git commit.  We also want
    to support kicking off an individual package build for a particular
    (rethinkdb git commit, platform) pair.
+
+BUILD REQUIREMENTS:
+
+   You need Ruby and Docker.
 
 DIRECTORY STRUCTURE:
 
