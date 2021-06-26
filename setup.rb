@@ -88,6 +88,8 @@ distros = [
 # latest production releases
   "bionic",
   "centos8",
+# Non-working with our default commit choices
+#  "hirsute",
   "focal",
 # past production releases
   "centos7",
