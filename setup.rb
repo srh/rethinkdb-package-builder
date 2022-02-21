@@ -87,20 +87,22 @@ support_args = "--build-arg commit=#{support_commit}"
 distros = [
 # latest production releases
   "bionic",
-  "centos8",
+#  "centos8",
 # Non-working with our default commit choices
-#  "hirsute",
+#  "jammy",
+  "impish",
+  "hirsute",
   "focal",
 # past production releases
-  "centos7",
-  "centos6",
+#  "centos7",
+#  "centos6",
   "buster",
   "stretch",
   "jessie",
   "xenial",
   "trusty",
 # unimportant releases
-  "eoan",
+#  "eoan",
 #  "disco",
 ]
 
