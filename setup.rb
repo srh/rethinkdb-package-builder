@@ -185,14 +185,29 @@ if options[:support]
   end
 
   if options[:dist]
+    # This focal build sequence is a (don't-repeat-yourself-violating)
+    # copy of the ordering logic above, instead of having some system
+    # to name dependencies and chase the graph.
+    Dir.chdir("focal/system") {
+      system "docker build -t samrhughes/rdb-focal-system ." or raise "build rdb-focal-system fail"
+    }
+    Dir.chdir("focal/support") {
+      system "docker build -t samrhughes/rdb-focal-support:#{support_commit} #{support_args} ." or raise "build rdb-focal-support fail"
+    }
+    Dir.chdir("focal/checkout") {
+      system "docker build -t samrhughes/rdb-focal-checkout:#{commit} #{checkout_args} ." or raise "build rdb-focal-checkout fail"
+    }
+
     Dir.chdir("dist") {
-      # We only need one dist file, it doesn't depend on OS.  So we pick a recent LTS ubuntu.
-      system "docker build -t samrhughes/rdb-bionic-dist:#{commit} #{build_args} ." or raise "build rdb-bionic-dist fail"
+      # We only need one dist file, it doesn't depend on OS.  So we
+      # pick a recent LTS ubuntu, focal, whose dependencies are
+      # ensured immediately above.
+      system "docker build -t samrhughes/rdb-focal-dist:#{commit} #{build_args} ." or raise "build rdb-focal-dist fail"
     }
 
     puts "Copying dist file into one pkgs directory..."
     FileUtils.mkdir_p("artifacts/pkgs")
-    cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-bionic-dist:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.tgz') /artifacts/pkgs\""
+    cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-focal-dist:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.tgz') /artifacts/pkgs\""
     puts "Executing #{cmd}"
     system cmd or raise "copy-dist fail"
     puts "Done copying dist."
