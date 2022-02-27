@@ -11,9 +11,13 @@ require 'optparse'
 
 basedir = Dir.pwd()
 
+# 6944015e7 is after npm and v8 removal, but with vendorized quickjs.
+# Also, it comes before package versions are updated.  We might want
+# to update this commit hash later.
+default_support_commit = "6944015e7"
 options = {
   :commit => "v2.3.7",
-  :support_commit => "v2.3.7",
+  :support_commit => default_support_commit,
   :support => false,
   :builds => false,
   :packages => false,
@@ -65,9 +69,16 @@ parser = OptionParser.new { |opts|
   opts.on("--copy-pkgs", "Copies debs and rpms to artifacts/pkgs") { |b|
     options[:copy] = (b ? :pkgs : false)
   }
-  opts.on("--v24support", "Build support libs for v2.4.x") { |b|
+  opts.on("--v23support", "Build support libs for v2.3.x") { |b|
+    options[:support_commit] = "v2.3.7"
+  }
+  opts.on("--v24support", "Build support libs for v2.4.0/v2.4.1") { |b|
     # b2365be is the "Parallelize deb-build" commit in v2.4.x.
     options[:support_commit] = "b2365bef6"
+  }
+  opts.on("--v242support", "Build support libs for v2.4.x, x>1") { |b|
+    # We might want to update this commit hash later.
+    options[:support_commit] = default_support_commit
   }
   opts.on("--docs", "Build docs for master branch") { |b|
     options[:docs] = b
