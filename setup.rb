@@ -99,8 +99,7 @@ distros = [
 # latest production releases
   "bionic",
 #  "centos8",
-# Non-working with our default commit choices
-#  "jammy",
+  "jammy",
   "impish",
   "hirsute",
   "focal",
