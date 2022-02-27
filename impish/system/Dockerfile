@@ -7,7 +7,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
     && ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata
 RUN apt-get update && apt-get install -y \
-    git build-essential protobuf-compiler python \
+    git build-essential protobuf-compiler python3 python-is-python3 \
     libprotobuf-dev libcurl4-openssl-dev libboost-all-dev \
     libncurses5-dev wget m4 clang libssl-dev \
     debhelper curl
