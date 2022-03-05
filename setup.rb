@@ -104,7 +104,7 @@ distros = [
   "hirsute",
   "focal",
 # past production releases
-#  "centos7",
+  "centos7",
 #  "centos6",
   "buster",
   "stretch",
