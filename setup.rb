@@ -97,10 +97,10 @@ support_args = "--build-arg commit=#{support_commit}"
 # distros is in order of priority.
 distros = [
 # latest production releases
-  "bionic",
-#  "centos8",
+  "bullseye",
   "jammy",
   "impish",
+#  "centos8",
   "hirsute",
   "focal",
 # past production releases
@@ -109,6 +109,7 @@ distros = [
   "buster",
   "stretch",
   "jessie",
+  "bionic",
   "xenial",
   "trusty",
 # unimportant releases
