@@ -8,4 +8,4 @@ RUN ./configure --allow-fetch CXX=clang++
 RUN make clean
 
 # Builds external packages
-RUN make -j7 support
+RUN make -j3 support

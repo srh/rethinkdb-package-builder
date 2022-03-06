@@ -14,4 +14,4 @@ RUN git fetch --all && git clean -fd
 RUN perl -pi -e 's/g\+\+-5/g\+\+/' mk/packaging.mk
 RUN perl -pi -e 's/version-dirty"/version"/' scripts/gen-version.sh
 
-RUN make -j7 build-deb UBUNTU_RELEASE=trusty
+RUN make -j3 build-deb UBUNTU_RELEASE=trusty

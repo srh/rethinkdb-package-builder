@@ -9,4 +9,4 @@ RUN scl enable devtoolset-2 -- ./configure --allow-fetch --fetch curl
 RUN scl enable devtoolset-2 -- make clean
 
 # Builds external packages
-RUN scl enable devtoolset-2 -- make -j7 support
+RUN scl enable devtoolset-2 -- make -j3 support
