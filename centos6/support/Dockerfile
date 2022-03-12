@@ -3,7 +3,7 @@ ARG commit
 
 WORKDIR /platform/rethinkdb
 
-RUN git checkout ${commit}
+RUN git fetch --all && git checkout ${commit}
 # DISAPPEND: Remove curl-devel package
 RUN scl enable devtoolset-2 -- ./configure --allow-fetch --fetch curl
 RUN scl enable devtoolset-2 -- make clean
