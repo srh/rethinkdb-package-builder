@@ -4,7 +4,7 @@ FROM centos:centos7
 
 # General platform dependencies
 RUN yum update -y && yum install -y openssl-devel libcurl-devel wget tar m4 \
-    git-core boost-static gcc-c++ npm ncurses-devel \
+    git-core gcc-c++ npm ncurses-devel \
     which make ncurses-static zlib-devel zlib-static \
     protobuf-devel protobuf-static jemalloc-devel \
     bzip2 patch \
