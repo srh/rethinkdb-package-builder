@@ -3,20 +3,7 @@ ARG commit
 
 WORKDIR /platform/rethinkdb
 
-# TODO: DISAPPEND all apk's
-RUN apk add git
-RUN apk add bash
-
-RUN git checkout ${commit}
-
-RUN apk add binutils
-RUN apk add musl-dev
-RUN apk add gcc
-RUN apk add g++
-RUN apk add python
-RUN apk add make
-RUN apk add perl
-RUN apk add linux-headers
+RUN git fetch --all && git checkout ${commit}
 
 # TODO: Consider adding jemalloc-dev, boost-dev, etc, instead of fetching externally.
 
