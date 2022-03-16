@@ -1,10 +1,13 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM alpine:3.11.5
+FROM alpine:3.15.0
 
 # General platform dependencies come before any other decision
-RUN apk update && apk add clang git bash bunitls musl-dev \
-    gcc g++ python make perl linux-headers
+RUN apk update && apk add git bash binutils musl-dev \
+    gcc g++ python3 make perl linux-headers \
+    protoc protobuf-dev zlib-dev openssl-dev curl-dev \
+    libexecinfo-dev
+RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 RUN mkdir /platform
 

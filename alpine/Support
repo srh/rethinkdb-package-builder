@@ -5,9 +5,7 @@ WORKDIR /platform/rethinkdb
 
 RUN git fetch --all && git checkout ${commit}
 
-# TODO: Consider adding jemalloc-dev, boost-dev, etc, instead of fetching externally.
-
-RUN ./configure --allow-fetch CXX=clang++
+RUN ./configure --fetch boost --fetch gtest --fetch re2 --fetch jemalloc
 RUN make clean
 
 # Builds external packages
