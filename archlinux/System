@@ -1,12 +1,10 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM archlinux:20200306
+FROM archlinux:base-20220313.0.50300
 
-# General platform dependencies come before any other decision
-RUN pacman -Syu --noconfirm clang protobuf boost jemalloc git python2 make
+RUN pacman -Syu --noconfirm gcc protobuf git python3 make
 
-ADD pythonscript /usr/local/bin/python
-RUN chmod +x /usr/local/bin/python
+RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
 RUN mkdir /platform
 
