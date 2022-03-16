@@ -7,7 +7,7 @@ RUN apk update && apk add git bash binutils musl-dev \
     gcc g++ python3 make perl linux-headers \
     protoc protobuf-dev zlib-dev openssl-dev curl-dev \
     libexecinfo-dev
-RUN ln -sf /usr/bin/python3 /usr/bin/python
+RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
 RUN mkdir /platform
 
