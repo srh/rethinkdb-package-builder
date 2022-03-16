@@ -139,8 +139,8 @@ Dir.chdir("rdbcheckout") {
 
 # Then do system builds
 distros.each { |distro|
-  Dir.chdir("#{distro}/system") {
-    system "docker build -t samrhughes/rdb-#{distro}-system ." or raise "build rdb-#{distro}-system fail"
+  Dir.chdir("#{distro}") {
+    system "docker build -t samrhughes/rdb-#{distro}-system -f System ." or raise "build rdb-#{distro}-system fail"
   }
 }
 
@@ -160,15 +160,15 @@ end
 if options[:support]
   # Then do support builds
   distros.each { |distro|
-    Dir.chdir("#{distro}/support") {
-      system "docker build -t samrhughes/rdb-#{distro}-support:#{support_commit} #{support_args} ." or raise "build rdb-#{distro}-support fail"
+    Dir.chdir("#{distro}") {
+      system "docker build -t samrhughes/rdb-#{distro}-support:#{support_commit} #{support_args} -f Support ." or raise "build rdb-#{distro}-support fail"
     }
   }
 
   # Then do checkouts
   distros.each { |distro|
-    Dir.chdir("#{distro}/checkout") {
-      system "docker build -t samrhughes/rdb-#{distro}-checkout:#{commit} #{checkout_args} ." or raise "build rdb-#{distro}-checkout fail"
+    Dir.chdir("#{distro}") {
+      system "docker build -t samrhughes/rdb-#{distro}-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-#{distro}-checkout fail"
     }
   }
 
@@ -191,14 +191,10 @@ if options[:support]
     # This focal build sequence is a (don't-repeat-yourself-violating)
     # copy of the ordering logic above, instead of having some system
     # to name dependencies and chase the graph.
-    Dir.chdir("focal/system") {
-      system "docker build -t samrhughes/rdb-focal-system ." or raise "build rdb-focal-system fail"
-    }
-    Dir.chdir("focal/support") {
-      system "docker build -t samrhughes/rdb-focal-support:#{support_commit} #{support_args} ." or raise "build rdb-focal-support fail"
-    }
-    Dir.chdir("focal/checkout") {
-      system "docker build -t samrhughes/rdb-focal-checkout:#{commit} #{checkout_args} ." or raise "build rdb-focal-checkout fail"
+    Dir.chdir("focal") {
+      system "docker build -t samrhughes/rdb-focal-system -f System ." or raise "build rdb-focal-system fail"
+      system "docker build -t samrhughes/rdb-focal-support:#{support_commit} #{support_args} -f Support ." or raise "build rdb-focal-support fail"
+      system "docker build -t samrhughes/rdb-focal-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-focal-checkout fail"
     }
 
     Dir.chdir("dist") {
@@ -219,8 +215,8 @@ if options[:support]
   if options[:packages]
     # And build packages, if we want that.
     distros.each { |distro|
-      Dir.chdir("#{distro}/package") {
-        system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} ." or raise "build rdb-#{distro}-package fail"
+      Dir.chdir("#{distro}") {
+        system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} -f Package ." or raise "build rdb-#{distro}-package fail"
       }
     }
 
