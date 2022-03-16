@@ -11,12 +11,8 @@ require 'optparse'
 
 basedir = Dir.pwd()
 
-# 6944015e7 is after npm and v8 removal, but with vendorized quickjs.
-# Also, it comes before package versions are updated.  We might want
-# to update this commit hash later. -- Update: We did:
-
-# 0df12c5e0 is after updating package versions.
-default_support_commit = "0df12c5e0"
+# 61869db29 is after updating package versions.
+default_support_commit = "61869db29"
 options = {
   :commit => "v2.3.7",
   :support_commit => default_support_commit,
