@@ -2,12 +2,11 @@ FROM samrhughes/rdbcheckout AS priorcheckout
 
 FROM debian:bullseye-slim
 
-# General platform dependencies come before any other decision
 RUN apt-get update && apt-get install -y \
     git build-essential protobuf-compiler \
-    python3 python-is-python3 libprotobuf-dev \
-    libcurl4-openssl-dev libboost-all-dev \
-    libncurses5-dev wget m4 clang libssl-dev \
+    python3 python-is-python3 \
+    libprotobuf-dev libcurl4-openssl-dev \
+    libncurses5-dev m4 g++ libssl-dev \
     debhelper curl
 
 RUN mkdir /platform
