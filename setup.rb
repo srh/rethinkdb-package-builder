@@ -99,20 +99,18 @@ distros = [
   "jammy",
   "impish",
 #  "centos8",
-  "hirsute",
-  "focal",
 # past production releases
   "centos7",
 #  "centos6",
   "buster",
   "stretch",
   "jessie",
+  "focal",
   "bionic",
   "xenial",
-  "trusty",
 # unimportant releases
-#  "eoan",
-#  "disco",
+  "hirsute",
+  "trusty",
 ]
 
 if options[:distro] != nil
