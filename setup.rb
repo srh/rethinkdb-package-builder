@@ -99,6 +99,7 @@ distros = [
   "jammy",
   "impish",
   "alma8",
+  "rocky8",
 #  "centos8",
 # past production releases
   "centos7",
