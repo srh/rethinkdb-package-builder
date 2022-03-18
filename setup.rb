@@ -11,10 +11,10 @@ require 'optparse'
 
 basedir = Dir.pwd()
 
-# 7c39ca9c5 is after updating package versions.
-default_support_commit = "7c39ca9c5"
+# 8b1903f16 is after updating package versions.
+default_support_commit = "8b1903f16"
 options = {
-  :commit => "v2.3.7",
+  :commit => "v2.4.2",
   :support_commit => default_support_commit,
   :support => false,
   :builds => false,
