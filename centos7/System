@@ -23,5 +23,8 @@ RUN gem install backports -v 3.21.0 && \
 
 RUN mkdir /platform
 
+# We explicitly install packages needed for package building here.
+RUN yum update -y && yum install -y libcurl libstdc++ zlib openssl-libs glibc
+
 # Copy cloned and mostly-fetched rethinkdb directory
 COPY --from=priorcheckout /rdb /platform
