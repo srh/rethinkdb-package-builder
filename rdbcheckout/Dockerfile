@@ -12,7 +12,7 @@ RUN git clone https://github.com/srh/rethinkdb
 WORKDIR /rdb/rethinkdb
 
 # This is also the v242support commit of setup.rb
-RUN git fetch --all && git checkout 8b1903f16
+RUN git fetch --all && git checkout 78cab9c3b
 RUN ./configure --fetch all
 RUN make -j3 fetch-boost fetch-curl fetch-gtest fetch-jemalloc \
     fetch-libidn fetch-openssl fetch-protobuf fetch-quickjs \
