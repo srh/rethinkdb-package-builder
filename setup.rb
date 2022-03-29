@@ -16,10 +16,12 @@ default_support_commit = "8170fb375"
 options = {
   :commit => "v2.4.2",
   :support_commit => default_support_commit,
-  :support => false,
+  # :yes, :no, or nil
+  :support => nil,
   :builds => false,
   :packages => false,
-  :copy => false,
+  # :dir, :pkgs, or nil
+  :copy => nil,
   :distro => nil,
   :dist => false,
   :docs => false,
@@ -34,19 +36,13 @@ parser = OptionParser.new { |opts|
     end
   }
   opts.on("--[no-]support", "Build support (default off)") { |s|
-    options[:support] = s
+    options[:support] = s ? :yes : :no
   }
   opts.on("--[no-]packages", "Build packages (default off)") { |p|
     options[:packages] = p
-    if p
-      options[:support] = true
-    end
   }
   opts.on("--[no-]builds", "Build builds (default off)") { |b|
     options[:builds] = b
-    if b
-      options[:support] = true
-    end
   }
   opts.on("--distro DISTRO", "The distro to build packages for (default all)") { |d|
     if d == "all"
@@ -57,15 +53,18 @@ parser = OptionParser.new { |opts|
   }
   opts.on("--dist", "Builds dist .tgz source file") { |b|
     options[:dist] = b
-    if b
-      options[:support] = true
-    end
   }
   opts.on("--copy-dirs", "Copies packages directory to artifacts/") { |b|
-    options[:copy] = (b ? :dir : false)
+    if b
+      raise "--copy-dirs is incompatible with --copy-pkgs" if options[:copy] == :pkgs
+      options[:copy] = :dir
+    end
   }
   opts.on("--copy-pkgs", "Copies debs and rpms to artifacts/pkgs") { |b|
-    options[:copy] = (b ? :pkgs : false)
+    if b
+      raise "--copy-dirs is incompatible with --copy-pkgs" if options[:copy] == :dirs
+      options[:copy] = :pkgs
+    end
   }
   opts.on("--v23support", "Build support libs for v2.3.x") { |b|
     options[:support_commit] = "v2.3.7"
@@ -84,6 +83,23 @@ parser = OptionParser.new { |opts|
 }
 
 parser.parse!
+
+if options[:dist]
+  raise "--dist is incompatible with --no-support" if options[:support] == :no
+  options[:support] = :yes
+end
+
+if options[:builds]
+  raise "--builds is incompatible with --no-support" if options[:support] == :no
+  options[:support] = :yes
+end
+
+if options[:packages]
+  raise "--packages is incompatible with --no-support" if options[:support] == :no
+  options[:support] = :yes
+end
+
+
 
 commit = options[:commit]
 support_commit = options[:support_commit]
@@ -153,7 +169,7 @@ if options[:docs]
   }
 end
 
-if options[:support]
+if options[:support] == :yes
   # Then do support builds
   distros.each { |distro|
     Dir.chdir("#{distro}") {
