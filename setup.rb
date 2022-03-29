@@ -6,13 +6,13 @@ require 'optparse'
 # Pro tip: You might have to run "sudo setup.rb ..."
 
 # To save time and space, we build images for support libs for
-# specific commits like v2.3.7 and 78cab9c3b (for v2.4.x), instead of
+# specific commits like v2.3.7 and 8170fb375 (for v2.4.x), instead of
 # all commits.
 
 basedir = Dir.pwd()
 
-# 78cab9c3b is after updating package versions and the latest QuickJS patch
-default_support_commit = "78cab9c3b"
+# 8170fb375 is after updating package versions and the latest QuickJS patch
+default_support_commit = "8170fb375"
 options = {
   :commit => "v2.4.2",
   :support_commit => default_support_commit,
