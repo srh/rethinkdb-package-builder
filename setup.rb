@@ -19,7 +19,8 @@ options = {
   # :yes, :no, or nil
   :support => nil,
   :builds => false,
-  :packages => false,
+  # :yes, :no, or nil
+  :packages => nil,
   # :dir, :pkgs, or nil
   :copy => nil,
   :distro => nil,
@@ -39,7 +40,7 @@ parser = OptionParser.new { |opts|
     options[:support] = s ? :yes : :no
   }
   opts.on("--[no-]packages", "Build packages (default off)") { |p|
-    options[:packages] = p
+    options[:packages] = p ? :yes : :no
   }
   opts.on("--[no-]builds", "Build builds (default off)") { |b|
     options[:builds] = b
@@ -84,6 +85,13 @@ parser = OptionParser.new { |opts|
 
 parser.parse!
 
+if options[:copy] == :pkgs || options[:copy] == :dirs
+  if options[:packages] == :no
+    raise "--copy-#{options[:copy]} is incompatible with --no-packages"
+  end
+  options[:packages] = :yes
+end
+
 if options[:dist]
   raise "--dist is incompatible with --no-support" if options[:support] == :no
   options[:support] = :yes
@@ -94,7 +102,7 @@ if options[:builds]
   options[:support] = :yes
 end
 
-if options[:packages]
+if options[:packages] == :yes
   raise "--packages is incompatible with --no-support" if options[:support] == :no
   options[:support] = :yes
 end
@@ -224,7 +232,7 @@ if options[:support] == :yes
     puts "Done copying dist."
   end
 
-  if options[:packages]
+  if options[:packages] == :yes
     # And build packages, if we want that.
     distros.each { |distro|
       Dir.chdir("#{distro}") {
