@@ -1,0 +1,9 @@
+FROM ubuntu:jammy
+ARG package_file
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN dpkg -i /packages/${package_file}
+
+RUN rethinkdb --version
