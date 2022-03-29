@@ -26,6 +26,7 @@ options = {
   :distro => nil,
   :dist => false,
   :docs => false,
+  :test_packages => false,
 }
 parser = OptionParser.new { |opts|
   opts.banner = "Usage: ./setup.rb [options]"
@@ -67,6 +68,9 @@ parser = OptionParser.new { |opts|
       options[:copy] = :pkgs
     end
   }
+  opts.on("--test-pkgs", "Tests copied debs and rpms") { |b|
+    options[:test_packages] = b
+  }
   opts.on("--v23support", "Build support libs for v2.3.x") { |b|
     options[:support_commit] = "v2.3.7"
   }
@@ -84,6 +88,16 @@ parser = OptionParser.new { |opts|
 }
 
 parser.parse!
+
+
+if options[:test_packages]
+  if options[:copy] == :dir
+    # I don't want to think about this right now, so we just require
+    # --copy-pkgs to be used.
+    raise "--test-pkgs is incompatible with --copy-dirs (out of sheer laziness)"
+  end
+  options[:copy] = :pkgs
+end
 
 if options[:copy] == :pkgs || options[:copy] == :dirs
   if options[:packages] == :no
@@ -251,6 +265,8 @@ if options[:support] == :yes
       }
       puts "Done copying dirs."
     elsif options[:copy] == :pkgs
+      packages_map = {}
+
       distros.each { |distro|
         puts "Copying deb/rpms for distro #{distro} into one directory..."
         FileUtils.mkdir_p("artifacts/pkgs")
@@ -259,14 +275,26 @@ if options[:support] == :yes
         cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.deb' -or -name '*.rpm') /artifacts/pkg_stage\""
         puts "Executing #{cmd}"
         system cmd or raise "copy-pkgs #{distro}-package fail"
+
+        packages_map[distro] = []
         Dir.glob("artifacts/pkg_stage/*").each { |ent|
           newname = File.basename(ent).gsub(/\.rpm$/, ".#{distro}.rpm")
           FileUtils.mv(ent, "artifacts/pkgs/#{newname}")
+          packages_map[distro].append(newname)
         }
 
         FileUtils.rmdir("artifacts/pkg_stage")
         puts "Done copying packages."
       }
+
+      if options[:test_packages]
+        distros.each { |distro|
+          packages_map[distro].each { |package_filename|
+            puts "Testing package install for #{package_filename}"
+            system "docker build -t samrhughes/rdb-#{distro}-test:#{commit} --build-arg package_file='#{package_filename}' -f #{distro}/Test artifacts/pkgs" or raise "build rdb-#{distro}-test fail"
+          }
+        }
+      end
     end
   end
 end
