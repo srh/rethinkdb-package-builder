@@ -290,8 +290,10 @@ if options[:support] == :yes
       if options[:test_packages]
         distros.each { |distro|
           packages_map[distro].each { |package_filename|
-            puts "Testing package install for #{package_filename}"
-            system "docker build -t samrhughes/rdb-#{distro}-test:#{commit} --build-arg package_file='#{package_filename}' -f #{distro}/Test artifacts/pkgs" or raise "build rdb-#{distro}-test fail"
+            if package_filename !~ /-dbg/
+              puts "Testing package install for #{package_filename}"
+              system "docker build -t samrhughes/rdb-#{distro}-test:#{commit} --build-arg package_file='#{package_filename}' -f #{distro}/Test artifacts/pkgs" or raise "build rdb-#{distro}-test fail"
+            end
           }
         }
       end
