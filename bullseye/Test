@@ -1,6 +1,8 @@
 FROM debian:bullseye-slim
 ARG package_file
 
+RUN apt-get update && apt-get install -y procps libcurl4 libprotobuf23
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 

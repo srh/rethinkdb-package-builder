@@ -1,6 +1,8 @@
 FROM ubuntu:bionic
 ARG package_file
 
+RUN apt-get update && apt-get install -y libcurl4 libprotobuf10 libssl1.1
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 

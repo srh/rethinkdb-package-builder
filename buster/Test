@@ -1,6 +1,8 @@
 FROM debian:buster-slim
 ARG package_file
 
+RUN apt-get update && apt-get install -y procps libcurl4 libprotobuf17 libssl1.1
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 

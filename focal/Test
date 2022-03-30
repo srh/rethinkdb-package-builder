@@ -1,6 +1,8 @@
 FROM ubuntu:focal
 ARG package_file
 
+RUN apt-get update && apt-get install -y libssl1.1 libprotobuf17 libcurl4
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 

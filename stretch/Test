@@ -1,6 +1,8 @@
 FROM debian:stretch-slim
 ARG package_file
 
+RUN apt-get update && apt-get install -y procps libcurl3 libprotobuf10 libssl1.0.2
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 

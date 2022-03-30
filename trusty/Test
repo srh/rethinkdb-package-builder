@@ -1,6 +1,8 @@
 FROM ubuntu:trusty
 ARG package_file
 
+RUN apt-get update && apt-get install -y libcurl3 libprotobuf8
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 
