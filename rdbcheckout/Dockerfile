@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu:focal
 RUN mkdir /rdb
 WORKDIR /rdb
 
