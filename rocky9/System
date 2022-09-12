@@ -1,0 +1,22 @@
+FROM samrhughes/rdbcheckout AS priorcheckout
+
+FROM rockylinux:9.0.20220720
+
+# General platform dependencies
+RUN dnf install -y openssl-devel libcurl-devel zlib-devel \
+    wget tar m4 \
+    git-core gcc-c++ which make python \
+    bzip2 patch \
+    perl rubygems ruby-devel rpm-build
+RUN gem install fpm
+
+RUN mkdir /platform
+
+# libcurl is needed for package building.  We pass --allowerasing so
+# that we replace libcurl-minimal.  The other packages are also needed
+# for package building, and we merely _explicitly_ install them here.
+RUN dnf install -y --allowerasing libcurl
+RUN dnf install -y libstdc++ zlib openssl-libs glibc
+
+# Copy cloned and mostly-fetched rethinkdb directory
+COPY --from=priorcheckout /rdb /platform

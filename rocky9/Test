@@ -1,0 +1,9 @@
+FROM rockylinux:9.0.20220720
+ARG package_file
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN rpm -i /packages/${package_file}
+
+RUN rethinkdb --version
