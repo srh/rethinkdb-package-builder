@@ -1,0 +1,9 @@
+FROM almalinux:9.0-20220901
+ARG package_file
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN rpm -i /packages/${package_file}
+
+RUN rethinkdb --version

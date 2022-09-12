@@ -137,6 +137,7 @@ distros = [
   "jammy",
   "impish",
   "alma8",
+  "alma9",
   "rocky8",
   "rocky9",
 #  "centos8",
