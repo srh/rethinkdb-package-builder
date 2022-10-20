@@ -134,6 +134,7 @@ support_args = "--build-arg commit=#{support_commit}"
 distros = [
 # latest production releases
   "bullseye",
+  "kinetic",
   "jammy",
   "impish",
   "alma8",
