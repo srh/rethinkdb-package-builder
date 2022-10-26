@@ -136,7 +136,6 @@ distros = [
   "bullseye",
   "kinetic",
   "jammy",
-  "impish",
   "alma8",
   "alma9",
   "rocky8",
@@ -152,6 +151,7 @@ distros = [
   "bionic",
   "xenial",
 # unimportant releases
+  "impish",
   "hirsute",
   "trusty",
 ]
