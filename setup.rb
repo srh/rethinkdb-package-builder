@@ -6,13 +6,13 @@ require 'optparse'
 # Pro tip: You might have to run "sudo setup.rb ..."
 
 # To save time and space, we build images for support libs for
-# specific commits like v2.3.7 and ca0eb820d (for v2.4.x), instead of
+# specific commits like v2.3.7 and 80d48f64a (for v2.4.x), instead of
 # all commits.
 
 basedir = Dir.pwd()
 
 # ca0eb820d is after updating package versions and the latest QuickJS patch
-default_support_commit = "ca0eb820d"
+default_support_commit = "80d48f64a"
 options = {
   :commit => "v2.4.2",
   :support_commit => default_support_commit,
@@ -78,7 +78,11 @@ parser = OptionParser.new { |opts|
     # b2365be is the "Parallelize deb-build" commit in v2.4.x.
     options[:support_commit] = "b2365bef6"
   }
-  opts.on("--v242support", "Build support libs for v2.4.x, x>1") { |b|
+  opts.on("--v242support", "Build support libs for v2.4.x, 1<x<=2") { |b|
+    # We might want to update this commit hash later.
+    options[:support_commit] = "ca0eb820d"
+  }
+  opts.on("--v243support", "Build support libs for v2.4.x, x>2") { |b|
     # We might want to update this commit hash later.
     options[:support_commit] = default_support_commit
   }
