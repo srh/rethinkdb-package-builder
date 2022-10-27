@@ -151,8 +151,6 @@ distros = [
   "bionic",
   "xenial",
 # unimportant releases
-  "impish",
-  "hirsute",
   "trusty",
 ]
 
