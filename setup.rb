@@ -31,8 +31,10 @@ options = {
 parser = OptionParser.new { |opts|
   opts.banner = "Usage: ./setup.rb [options]"
   opts.on("-c", "--commit COMMIT", "The commit to build packages for (default v2.3.7)") { |c|
-    if c[0] == "v" || c.length == 9
+    if c[0] == "v"
       options[:commit] = c
+    elsif c =~ /^[a-f0-9]{9,}$/
+      options[:commit] = c[0...9]
     else
       raise "Commit must be \"v...\" or be hash of length 9"
     end
