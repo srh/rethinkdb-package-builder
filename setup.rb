@@ -11,8 +11,8 @@ require 'optparse'
 
 basedir = Dir.pwd()
 
-# ca0eb820d is after updating package versions and the latest QuickJS patch
-default_support_commit = "80d48f64a"
+# 38957e2c0 is after the sha256sum patch
+default_support_commit = "38957e2c0"
 options = {
   :commit => "v2.4.2",
   :support_commit => default_support_commit,
