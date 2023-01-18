@@ -1,8 +1,9 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM debian:jessie-slim
+FROM debian/eol:jessie-slim
 
 # General platform dependencies come before any other decision
+
 RUN apt-get update && apt-get install -y \
     git build-essential protobuf-compiler \
     python \
