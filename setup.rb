@@ -194,7 +194,7 @@ if options[:docs]
   }
   docs_commit = "e4be287c2"
   Dir.chdir("docs/build") {
-    system "docker build -t samrhughes/rdb-docs-build:#{docs_commit} --build-arg commit=${docs_commit} ." or raise "build rdb-docs-build fail"
+    system "docker build -t samrhughes/rdb-docs-build:#{docs_commit} --build-arg commit=#{docs_commit} ." or raise "build rdb-docs-build fail"
   }
 end
 
