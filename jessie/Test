@@ -1,4 +1,4 @@
-FROM debian:jessie-slim
+FROM debian/eol:jessie-slim
 ARG package_file
 
 RUN apt-get update && apt-get install -y libcurl3 libprotobuf9 libssl1.0.0

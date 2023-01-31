@@ -1,6 +1,8 @@
 FROM almalinux:9.0-20220901
 ARG package_file
 
+RUN dnf install -y libstdc++
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 
