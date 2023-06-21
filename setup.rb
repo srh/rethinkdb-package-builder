@@ -139,9 +139,8 @@ support_args = "--build-arg commit=#{support_commit}"
 # distros is in order of priority.
 distros = [
 # latest production releases
-  "bullseye",
+  "bookworm",
   "lunar",
-  "kinetic",
   "jammy",
   "alma8",
   "alma9",
@@ -151,9 +150,11 @@ distros = [
 # past production releases
   "centos7",
 #  "centos6",
+  "bullseye",
   "buster",
   "stretch",
   "jessie",
+  "kinetic",
   "focal",
   "bionic",
   "xenial",

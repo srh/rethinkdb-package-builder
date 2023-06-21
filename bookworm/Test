@@ -1,0 +1,11 @@
+FROM debian:bookworm-slim
+ARG package_file
+
+RUN apt-get update && apt-get install -y procps libcurl4 libprotobuf32
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN dpkg -i /packages/${package_file}
+
+RUN rethinkdb --version
