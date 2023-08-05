@@ -1,0 +1,8 @@
+ARG commit
+FROM samrhughes/rdb-amazon2-checkout:${commit}
+
+WORKDIR /platform/rethinkdb
+
+# We refetch to get any last-minute tags.
+RUN git fetch --all && git clean -fd
+RUN ./scripts/build-rpm.sh

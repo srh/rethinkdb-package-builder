@@ -149,6 +149,7 @@ distros = [
 #  "centos8",
 # past production releases
   "centos7",
+  "amazon2",
 #  "centos6",
   "bullseye",
   "buster",
