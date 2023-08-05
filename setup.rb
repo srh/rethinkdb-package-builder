@@ -149,7 +149,8 @@ distros = [
 #  "centos8",
 # past production releases
   "centos7",
-  "amazon2",
+# amazon2 is working if uncommented
+# "amazon2",
 #  "centos6",
   "bullseye",
   "buster",
