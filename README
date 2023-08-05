@@ -12,10 +12,22 @@ RethinkDB Mass Package Builder
        # Linux
        sudo ruby setup.rb
 
+   Sudo is only necessary if your docker installation needs it.
+
    In general we will (at some point) want to support kicking off a
    mass package build for a given rethinkdb git commit.  We also want
    to support kicking off an individual package build for a particular
    (rethinkdb git commit, platform) pair.
+
+EXAMPLE USAGE:
+
+    ./setup.rb --help
+
+    # build packages, test installation, and copy packages for jammy
+    ./setup.rb -c v2.4.3 --v243support --packages --test-pkgs --copy-pkgs --distro jammy
+
+    # view rethinkdb_2.4.3~0jammy_amd64.deb
+    ls artifacts/pkgs
 
 BUILD REQUIREMENTS:
 
