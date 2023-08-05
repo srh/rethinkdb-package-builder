@@ -14,7 +14,7 @@ basedir = Dir.pwd()
 # 38957e2c0 is after the sha256sum patch
 default_support_commit = "38957e2c0"
 options = {
-  :commit => "v2.4.2",
+  :commit => "v2.4.3",
   :support_commit => default_support_commit,
   # :yes, :no, or nil
   :support => nil,
@@ -30,7 +30,7 @@ options = {
 }
 parser = OptionParser.new { |opts|
   opts.banner = "Usage: ./setup.rb [options]"
-  opts.on("-c", "--commit COMMIT", "The commit to build packages for (default v2.3.7)") { |c|
+  opts.on("-c", "--commit COMMIT", "The commit to build packages for (default v2.4.3)") { |c|
     if c[0] == "v"
       options[:commit] = c
     elsif c =~ /^[a-f0-9]{9,}$/
