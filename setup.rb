@@ -140,7 +140,7 @@ support_args = "--build-arg commit=#{support_commit}"
 distros = [
 # latest production releases
   "bookworm",
-  "lunar",
+  "mantic",
   "jammy",
   "alma8",
   "alma9",
@@ -157,6 +157,7 @@ distros = [
   "stretch",
   "jessie",
   "kinetic",
+  "lunar",
   "focal",
   "bionic",
   "xenial",
