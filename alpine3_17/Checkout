@@ -1,5 +1,5 @@
 ARG support_commit
-FROM samrhughes/rdb-alpine-support:${support_commit}
+FROM samrhughes/rdb-alpine3_17-support:${support_commit}
 ARG commit
 
 WORKDIR /platform/rethinkdb

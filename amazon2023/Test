@@ -1,0 +1,12 @@
+FROM amazonlinux:2023.2.20231113.0
+ARG package_file
+
+# For groupadd and useradd
+RUN yum update -y && yum install -y shadow-utils
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN rpm -i /packages/${package_file}
+
+RUN rethinkdb --version

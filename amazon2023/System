@@ -1,0 +1,46 @@
+FROM samrhughes/rdbcheckout AS priorcheckout
+
+FROM amazonlinux:2023.2.20231113.0
+
+# General platform dependencies
+RUN yum update -y && yum install -y openssl-devel libcurl-devel wget tar m4 \
+    git-core gcc-c++ \
+    which make zlib-devel \
+    protobuf-devel \
+    bzip2 patch \
+    rubygems ruby-devel rpm-build \
+    libquadmath-devel
+
+# To be removed when we make build-rpm.sh not statically link ssl and curl
+RUN yum update -y && yum install -y perl perl-IPC-Cmd perl-Data-Dumper
+
+# Brutal, but we need to work around addressable and fpm causing
+# public_suffix:5.0.0 getting installed, and other potential problems.
+RUN gem install public_suffix -v 2.0.5 && \
+    gem install backports -v 3.21.0 && \
+    gem install rexml -v 3.2.3 && \
+    gem install ffi -v 1.12.0 && \
+    gem install git -v 1.7.0 && \
+    gem install pry -v 0.14.1 && \
+    gem install rake -v 12.0.0 && \
+    gem install rspec -v 3.12.0 && \
+    gem install stud -v 0.0.23 && \
+    gem install rchardet -v 1.8.0 && \
+    gem install arr-pm -v 0.0.12 && \
+    gem install cabin -v 0.9.0 && \
+    gem install clamp -v 1.0.1 && \
+    gem install json -v 2.5.1 && \
+    gem install pleaserun -v 0.0.32 && \
+    gem install dotenv -v 2.8.1 && \
+    gem install insist -v 1.0.0 && \
+    gem install mustache -v 1.1.1 && \
+    gem install addressable -v 2.8.0 --ignore-dependencies && \
+    gem install fpm -v 1.14.2 --ignore-dependencies
+
+RUN mkdir /platform
+
+# We explicitly install packages needed for package building here.
+RUN yum update -y && yum install -y libcurl libstdc++ zlib openssl-libs glibc
+
+# Copy cloned and mostly-fetched rethinkdb directory
+COPY --from=priorcheckout /rdb /platform

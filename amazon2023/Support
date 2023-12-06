@@ -1,0 +1,11 @@
+FROM samrhughes/rdb-amazon2023-system
+ARG commit
+
+WORKDIR /platform/rethinkdb
+
+RUN git fetch --all && git checkout ${commit}
+RUN ./configure --fetch boost --fetch gtest --fetch re2 --fetch jemalloc --fetch quickjs
+RUN make clean
+
+# Builds external packages
+RUN make -j7 support

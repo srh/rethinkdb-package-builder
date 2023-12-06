@@ -1,6 +1,6 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM archlinux:base-20221016.0.94779
+FROM archlinux:base-20231112.0.191179
 
 RUN pacman -Syu --noconfirm gcc protobuf git python3 make patch
 

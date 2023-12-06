@@ -1,6 +1,6 @@
 FROM samrhughes/rdbcheckout AS priorcheckout
 
-FROM alpine:3.18.0
+FROM alpine:3.15.11
 
 # General platform dependencies come before any other decision
 RUN apk update && apk add git bash binutils musl-dev \

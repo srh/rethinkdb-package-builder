@@ -1,0 +1,19 @@
+FROM samrhughes/rdbcheckout AS priorcheckout
+
+FROM alpine:20230901
+
+# General platform dependencies come before any other decision
+RUN apk update && apk add git bash binutils musl-dev \
+    gcc g++ python3 make perl linux-headers \
+    protoc protobuf-dev zlib-dev openssl-dev curl-dev
+
+# Not on 3.18.0
+# RUN apk update && apk add libexecinfo-dev
+
+RUN ln -s /usr/bin/python3 /usr/local/bin/python
+
+RUN mkdir /platform
+
+# Copy cloned and mostly-fetched rethinkdb directory
+COPY --from=priorcheckout /rdb /platform
+
