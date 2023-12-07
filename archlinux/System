@@ -2,7 +2,7 @@ FROM samrhughes/rdbcheckout AS priorcheckout
 
 FROM archlinux:base-20231112.0.191179
 
-RUN pacman -Syu --noconfirm gcc protobuf git python3 make patch
+RUN pacman -Syu --noconfirm gcc git python3 make patch
 
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
