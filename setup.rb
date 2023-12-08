@@ -150,15 +150,17 @@ distros = [
 # past production releases
   "centos7",
 
-# Working(?) But normally commented.
-  "amazon2",
-  "amazon2023",
-  "archlinux",
-  "alpine3_15",
-  "alpine3_16",
-  "alpine3_17",
-  "alpine3_18",
-  "alpine_edge",
+# working but normally commented.
+#  "amazon2",
+#  "amazon2023",
+#  "archlinux",
+#  "alpine3_15",
+#  "alpine3_15i386",
+#  "alpine3_16",
+#  "alpine3_17",
+#  "alpine3_18",
+#  "alpine_edge",
+#  "alpine_edgei386",
 
 #  "centos6",
   "bullseye",
@@ -172,10 +174,11 @@ distros = [
   "xenial",
 # unimportant releases
   "trusty",
+#  "trustyi386",
 ]
 
 if options[:distro] != nil
-  if ["archlinux", "alpine3_15", "alpine3_16", "alpine3_17", "alpine3_18", "alpine_edge"].include?(options[:distro])
+  if ["archlinux", "alpine3_15", "alpine3_15i386", "alpine3_16", "alpine3_17", "alpine3_18", "alpine_edge", "alpine_edgei386"].include?(options[:distro])
     # We don't yet implement package builds for archlinux/alpine, we don't want the all-distros option to fail.
     distros = [options[:distro]]
   else

@@ -1,0 +1,12 @@
+FROM samrhughes/rdb-alpine_edgei386-system
+ARG commit
+
+WORKDIR /platform/rethinkdb
+
+RUN git fetch --all && git checkout ${commit}
+
+RUN ./configure --fetch boost --fetch gtest --fetch re2 --fetch jemalloc --fetch quickjs --fetch protoc
+RUN make clean
+
+# Builds external packages
+RUN make -j7 support
