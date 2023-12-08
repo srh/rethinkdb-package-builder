@@ -167,7 +167,7 @@ distros = [
   "buster",
 #  "stretch",
 #  "jessie",
-  "kinetic",
+#  "kinetic",
   "lunar",
   "focal",
   "bionic",
