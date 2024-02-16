@@ -258,7 +258,7 @@ if options[:support] == :yes
         raise "We do not support for werror-builds with centos6"
       else
         Dir.chdir("werror_build") {
-          system "docker build -t samrhughes/rdb-#{distro}-werror_build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
+          system "docker build -t samrhughes/rdb-#{distro}-werror_build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-werror_build fail"
         }
       end
     }
