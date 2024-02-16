@@ -13,7 +13,7 @@ basedir = Dir.pwd()
 
 # 38957e2c0 is after the sha256sum patch
 default_support_commit = "38957e2c0"
-default_commit = "v2.4.3"
+default_commit = "v2.4.4"
 options = {
   :commit => default_commit,
   :support_commit => default_support_commit,
