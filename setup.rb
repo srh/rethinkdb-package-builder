@@ -6,8 +6,13 @@ require 'optparse'
 # Pro tip: You might have to run "sudo setup.rb ..."
 
 # To save time and space, we build images for support libs for
-# specific commits like v2.3.7 and 80d48f64a (for v2.4.x), instead of
-# all commits.
+# specific commits like v2.3.7 and 38957e2c0 (for v2.4.4 and later),
+# instead of all commits.  If you specify the wrong "support_commit"
+# option, nothing will break, but you will end up rebuilding some
+# support libraries because they changed.
+#
+# TODO: Look into default_commit's git history and automatically
+# select the support commit to use.
 
 basedir = Dir.pwd()
 
