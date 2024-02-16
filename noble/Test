@@ -1,0 +1,11 @@
+FROM ubuntu:noble
+ARG package_file
+
+RUN apt-get update && apt-get install -y libc6 libcurl4 libprotobuf32 adduser
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN dpkg -i /packages/${package_file}
+
+RUN rethinkdb --version
