@@ -11,7 +11,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN git clone https://github.com/srh/rethinkdb
 WORKDIR /rdb/rethinkdb
 
-# This is also the v242support commit of setup.rb
+# This is also the default_support_commit commit of setup.rb
 RUN git fetch --all && git checkout 38957e2c0
 RUN ./configure --fetch all
 RUN make -j3 fetch-boost fetch-curl fetch-gtest fetch-jemalloc \
