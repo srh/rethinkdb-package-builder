@@ -25,6 +25,7 @@ options = {
   # :yes, :no, or nil
   :support => nil,
   :builds => false,
+  :werror_builds => false,
   # :yes, :no, or nil
   :packages => nil,
   # :dir, :pkgs, or nil
@@ -53,6 +54,9 @@ parser = OptionParser.new { |opts|
   }
   opts.on("--[no-]builds", "Build builds (default off)") { |b|
     options[:builds] = b
+  }
+  opts.on("--[no-]werror-builds", "Build builds with ALLOW_WARNINGS=0 (default off)") { |b|
+    options[:werror_builds] = b
   }
   opts.on("--distro DISTRO", "The distro to build packages for (default all)") { |d|
     if d == "all"
@@ -126,6 +130,15 @@ end
 if options[:builds]
   raise "--builds is incompatible with --no-support" if options[:support] == :no
   options[:support] = :yes
+end
+
+if options[:werror_builds]
+  raise "--werror-builds is incompatible with --no-support" if options[:support] == :no
+  options[:support] = :yes
+end
+
+if options[:builds] and options[:werror_builds]
+  raise "--builds is useless if you are running --werror-builds, so pick one (or comment this out and file a complaint)"
 end
 
 if options[:packages] == :yes
@@ -236,6 +249,20 @@ if options[:support] == :yes
       system "docker build -t samrhughes/rdb-#{distro}-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-#{distro}-checkout fail"
     }
   }
+
+  # Then do builds and werror-builds, if we want that.
+  if options[:werror_builds]
+    distros.each { |distro|
+      if distro == "centos6"
+        # TODO: It would be trivial to support this the way --builds does.
+        raise "We do not support for werror-builds with centos6"
+      else
+        Dir.chdir("werror_build") {
+          system "docker build -t samrhughes/rdb-#{distro}-werror_build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
+        }
+      end
+    }
+  end
 
   if options[:builds]
     # Then do builds, if we want that.
