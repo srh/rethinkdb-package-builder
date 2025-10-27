@@ -1,0 +1,13 @@
+FROM ubuntu:oracular
+ARG package_file
+
+RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list.d/*
+
+RUN apt-get update && apt-get install -y libc6 libcurl4 libprotobuf32 adduser
+
+RUN mkdir /packages
+COPY ${package_file} /packages
+
+RUN dpkg -i /packages/${package_file}
+
+RUN rethinkdb --version

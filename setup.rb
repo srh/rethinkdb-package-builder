@@ -153,6 +153,7 @@ distros = [
 # latest production releases
   "bookworm",
   "plucky",
+  "oracular",
   "noble",
   "jammy",
   "alma8",
