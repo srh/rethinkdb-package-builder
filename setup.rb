@@ -18,6 +18,8 @@ basedir = Dir.pwd()
 
 # 38957e2c0 is after the sha256sum patch
 default_support_commit = "38957e2c0"
+# 792922d6c is after the boost 1.60.0 patch
+new_support_commit = "792922d6c"
 default_commit = "v2.4.4"
 options = {
   :commit => default_commit,
@@ -94,6 +96,10 @@ parser = OptionParser.new { |opts|
     # We might want to update this commit hash later.
     options[:support_commit] = default_support_commit
   }
+  opts.on("--v245support", "Build support libs for v2.4.x, x>4") { |b|
+    # We might want to update this commit hash later.
+    options[:support_commit] = new_support_commit
+  }
   opts.on("--docs", "Build docs for master branch") { |b|
     options[:docs] = b
   }
@@ -146,8 +152,8 @@ support_args = "--build-arg commit=#{support_commit}"
 distros = [
 # latest production releases
   "bookworm",
+  "plucky",
   "noble",
-  "mantic",
   "jammy",
   "alma8",
   "alma9",
@@ -175,6 +181,7 @@ distros = [
 #  "stretch",
 #  "jessie",
 #  "kinetic",
+  "mantic",
   "lunar",
   "focal",
   "bionic",
@@ -197,28 +204,30 @@ if distros.empty?
   raise "Invalid distro"
 end
 
+docker_build = "docker build --progress=plain"
+
 # First build the base image
 Dir.chdir("rdbcheckout") {
-  system "docker build -t samrhughes/rdbcheckout ." or raise "build rdbcheckout fail"
+  system "#{docker_build} -t samrhughes/rdbcheckout ." or raise "build rdbcheckout fail"
 }
 
 # Then do system builds
 distros.each { |distro|
   Dir.chdir("#{distro}") {
-    system "docker build -t samrhughes/rdb-#{distro}-system -f System ." or raise "build rdb-#{distro}-system fail"
+    system "#{docker_build} -t samrhughes/rdb-#{distro}-system -f System ." or raise "build rdb-#{distro}-system fail"
   }
 }
 
 if options[:docs]
   Dir.chdir("docs/docscheckout") {
-    system "docker build -t samrhughes/rdb-docs-docscheckout ." or raise "build rdb-docs-docscheckout fail"
+    system "#{docker_build} -t samrhughes/rdb-docs-docscheckout ." or raise "build rdb-docs-docscheckout fail"
   }
   Dir.chdir("docs/system") {
-    system "docker build -t samrhughes/rdb-docs-system ." or raise "build rdb-docs-system fail"
+    system "#{docker_build} -t samrhughes/rdb-docs-system ." or raise "build rdb-docs-system fail"
   }
   docs_commit = "e4be287c2"
   Dir.chdir("docs/build") {
-    system "docker build -t samrhughes/rdb-docs-build:#{docs_commit} --build-arg commit=#{docs_commit} ." or raise "build rdb-docs-build fail"
+    system "#{docker_build} -t samrhughes/rdb-docs-build:#{docs_commit} --build-arg commit=#{docs_commit} ." or raise "build rdb-docs-build fail"
   }
 end
 
@@ -226,14 +235,14 @@ if options[:support] == :yes
   # Then do support builds
   distros.each { |distro|
     Dir.chdir("#{distro}") {
-      system "docker build -t samrhughes/rdb-#{distro}-support:#{support_commit} #{support_args} -f Support ." or raise "build rdb-#{distro}-support fail"
+      system "#{docker_build} -t samrhughes/rdb-#{distro}-support:#{support_commit} #{support_args} -f Support ." or raise "build rdb-#{distro}-support fail"
     }
   }
 
   # Then do checkouts
   distros.each { |distro|
     Dir.chdir("#{distro}") {
-      system "docker build -t samrhughes/rdb-#{distro}-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-#{distro}-checkout fail"
+      system "#{docker_build} -t samrhughes/rdb-#{distro}-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-#{distro}-checkout fail"
     }
   }
 
@@ -242,11 +251,11 @@ if options[:support] == :yes
     distros.each { |distro|
       if distro == "centos6"
         Dir.chdir("#{distro}/build") {
-          system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
+          system "#{docker_build} -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} ." or raise "build rdb-#{distro}-build fail"
         }
       else
         Dir.chdir("build") {
-          system "docker build -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
+          system "#{docker_build} -t samrhughes/rdb-#{distro}-build:#{commit} #{build_args} --build-arg distro=#{distro} ." or raise "build rdb-#{distro}-build fail"
         }
       end
     }
@@ -257,16 +266,16 @@ if options[:support] == :yes
     # copy of the ordering logic above, instead of having some system
     # to name dependencies and chase the graph.
     Dir.chdir("focal") {
-      system "docker build -t samrhughes/rdb-focal-system -f System ." or raise "build rdb-focal-system fail"
-      system "docker build -t samrhughes/rdb-focal-support:#{support_commit} #{support_args} -f Support ." or raise "build rdb-focal-support fail"
-      system "docker build -t samrhughes/rdb-focal-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-focal-checkout fail"
+      system "#{docker_build} -t samrhughes/rdb-focal-system -f System ." or raise "build rdb-focal-system fail"
+      system "#{docker_build} -t samrhughes/rdb-focal-support:#{support_commit} #{support_args} -f Support ." or raise "build rdb-focal-support fail"
+      system "#{docker_build} -t samrhughes/rdb-focal-checkout:#{commit} #{checkout_args} -f Checkout ." or raise "build rdb-focal-checkout fail"
     }
 
     Dir.chdir("dist") {
       # We only need one dist file, it doesn't depend on OS.  So we
       # pick a recent LTS ubuntu, focal, whose dependencies are
       # ensured immediately above.
-      system "docker build -t samrhughes/rdb-focal-dist:#{commit} #{build_args} ." or raise "build rdb-focal-dist fail"
+      system "#{docker_build} -t samrhughes/rdb-focal-dist:#{commit} #{build_args} ." or raise "build rdb-focal-dist fail"
     }
 
     puts "Copying dist file into one pkgs directory..."
@@ -281,7 +290,7 @@ if options[:support] == :yes
     # And build packages, if we want that.
     distros.each { |distro|
       Dir.chdir("#{distro}") {
-        system "docker build -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} -f Package ." or raise "build rdb-#{distro}-package fail"
+        system "#{docker_build} -t samrhughes/rdb-#{distro}-package:#{commit} #{package_args} -f Package ." or raise "build rdb-#{distro}-package fail"
       }
     }
 
@@ -323,7 +332,7 @@ if options[:support] == :yes
           packages_map[distro].each { |package_filename|
             if package_filename !~ /-dbg/
               puts "Testing package install for #{package_filename}"
-              system "docker build -t samrhughes/rdb-#{distro}-test:#{commit} --build-arg package_file='#{package_filename}' -f #{distro}/Test artifacts/pkgs" or raise "build rdb-#{distro}-test fail"
+              system "#{docker_build} -t samrhughes/rdb-#{distro}-test:#{commit} --build-arg package_file='#{package_filename}' -f #{distro}/Test artifacts/pkgs" or raise "build rdb-#{distro}-test fail"
             end
           }
         }

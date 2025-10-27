@@ -1,0 +1,18 @@
+FROM samrhughes/rdb-plucky-system
+ARG commit
+
+WORKDIR /platform/rethinkdb
+
+RUN git fetch --all && git checkout ${commit}
+RUN ./configure --fetch boost --fetch gtest --fetch re2 --fetch jemalloc --fetch quickjs
+RUN make clean
+
+# HACK
+
+# Wipe boost_1.60.0 to force it to be re-extracted from
+# external/.cache and now, patched with boost_0-implicit-defs.patch
+
+RUN rm -r external/boost_1.60.0
+
+# Builds external packages
+RUN make -j7 support
