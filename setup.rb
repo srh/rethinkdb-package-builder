@@ -151,7 +151,7 @@ support_args = "--build-arg commit=#{support_commit}"
 # distros is in order of priority.
 distros = [
 # latest production releases
-  "bookworm",
+  "trixie",
   "plucky",
   "oracular",
   "noble",
@@ -177,6 +177,7 @@ distros = [
 #  "alpine_edgei386",
 
 #  "centos6",
+  "bookworm",
   "bullseye",
   "buster",
 #  "stretch",
