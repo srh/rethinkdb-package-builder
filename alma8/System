@@ -2,6 +2,10 @@ FROM samrhughes/rdbcheckout AS priorcheckout
 
 FROM almalinux:8.5-20220306
 
+# Import newer GPG key
+COPY RPM-GPG-KEY-AlmaLinux /
+RUN rpm --import /RPM-GPG-KEY-AlmaLinux
+
 # General platform dependencies
 RUN dnf install -y openssl-devel libcurl-devel wget tar m4 \
     git-core gcc-c++ which make python3 \

@@ -1,6 +1,10 @@
 FROM almalinux:8.5-20220306
 ARG package_file
 
+# Import newer GPG key
+COPY RPM-GPG-KEY-AlmaLinux /
+RUN rpm --import /RPM-GPG-KEY-AlmaLinux
+
 RUN mkdir /packages
 COPY ${package_file} /packages
 
