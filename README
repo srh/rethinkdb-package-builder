@@ -14,10 +14,10 @@ RethinkDB Mass Package Builder
 
    Sudo is only necessary if your docker installation needs it.
 
-   In general we will (at some point) want to support kicking off a
-   mass package build for a given rethinkdb git commit.  We also want
-   to support kicking off an individual package build for a particular
-   (rethinkdb git commit, platform) pair.
+   This supports kicking off a mass package build for a given
+   rethinkdb git commit.  It also supports kicking off an individual
+   package build for a particular (rethinkdb git commit, platform)
+   pair.
 
 EXAMPLE USAGE:
 
@@ -33,6 +33,13 @@ BUILD REQUIREMENTS:
 
    You need Ruby and Docker.
 
+REPRODUCIBILITY:
+
+   These builds are not perfectly reproducible.  They run "apt-get
+   update", for example, and fetch unversioned and un-checksummed
+   dependencies from their apt sources.  Sometimes package sources
+   disappear, or change URLs, causing the Dockerfiles to break.
+
 DIRECTORY STRUCTURE:
 
    - rdbcheckout - clones rethinkdb and fetches the biggest external
@@ -41,7 +48,13 @@ DIRECTORY STRUCTURE:
 
      Keeps the checkout in /rdb
 
-   - bionic, buster, strech, centos8, et al - dockerfiles for building
+   - artifacts - output directory (created by setup.rb) for packages,
+     dist files, etc.
+
+   - dist, build - common docker recipes that are identical on most
+     of their applicable platforms.
+
+   - bionic, buster, stretch, centos8, et al - dockerfiles for building
      on specific platforms
 
      Copies /rdb from rdbcheckout to /platform, then does its work.
@@ -50,14 +63,3 @@ NOTES:
 
    - The creator of this (Sam Hughes <sam@samuelhughes.com>) is a
      Docker n00b, so feel free to second-guess his decisions.
-
-SEARCH TERMS:
-
-   - "DISAPPEND": A TODO item for a build task that should be moved
-     elsewhere.  But currently it isn't, to avoid re-fetching and
-     re-building.
-
-     In general, these Dockerfiles are developed in an append-only
-     manner, because rebuilding images is really slow.  But if and
-     when I have to touch the core file, I'll want to clean up that
-     cruft.
