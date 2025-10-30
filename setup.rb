@@ -162,7 +162,7 @@ distros = [
   "rocky9",
 #  "centos8",
 # past production releases
-  "centos7",
+#  "centos7",
 
 # working but normally commented.
 #  "amazon2",
@@ -179,12 +179,12 @@ distros = [
 #  "centos6",
   "bookworm",
   "bullseye",
-  "buster",
+#  "buster",
 #  "stretch",
 #  "jessie",
 #  "kinetic",
-  "mantic",
-  "lunar",
+#  "mantic",
+#  "lunar",
   "focal",
   "bionic",
   "xenial",
