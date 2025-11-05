@@ -152,8 +152,8 @@ support_args = "--build-arg commit=#{support_commit}"
 distros = [
 # latest production releases
   "trixie",
+  "questing",
   "plucky",
-  "oracular",
   "noble",
   "jammy",
   "alma8",
@@ -179,6 +179,7 @@ distros = [
 #  "centos6",
   "bookworm",
   "bullseye",
+  "oracular",
 #  "buster",
 #  "stretch",
 #  "jessie",
