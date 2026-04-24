@@ -23,10 +23,10 @@ EXAMPLE USAGE:
 
     ./setup.rb --help
 
-    # build packages, test installation, and copy packages for jammy
-    ./setup.rb -c v2.4.3 --v243support --packages --test-pkgs --copy-pkgs --distro jammy
+    # build packages, test installation, and copy packages for resolute
+    ./setup.rb -c v2.4.5 --v245support --packages --test-pkgs --copy-pkgs --distro resolute
 
-    # view rethinkdb_2.4.3~0jammy_amd64.deb
+    # view rethinkdb_2.4.5~0resolute_amd64.deb
     ls artifacts/pkgs
 
 BUILD REQUIREMENTS:

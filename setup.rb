@@ -151,6 +151,7 @@ support_args = "--build-arg commit=#{support_commit}"
 # distros is in order of priority.
 distros = [
 # latest production releases
+  "resolute",
   "trixie",
   "questing",
   "plucky",
