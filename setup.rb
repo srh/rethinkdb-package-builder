@@ -13,6 +13,13 @@ require 'optparse'
 #
 # TODO: Look into default_commit's git history and automatically
 # select the support commit to use.
+#
+# If you're on an X86-64 system and want to build ARM packages, you
+# can use --platform arm64 to try that.  See the README for
+# prerequisites.  But in the reverse situation, on an ARM system,
+# you'll need to make some (trivial) changes to options[:platform]
+# handling that are suggested below.  (And then share your changes so
+# that you don't have to maintain a fork.)
 
 basedir = Dir.pwd()
 
@@ -32,6 +39,8 @@ options = {
   # :dir, :pkgs, or nil
   :copy => nil,
   :distro => nil,
+  # empty string or amd64 (same thing), or arm64
+  :platform => nil,
   :dist => false,
   :docs => false,
   :test_packages => false,
@@ -102,6 +111,9 @@ parser = OptionParser.new { |opts|
   }
   opts.on("--docs", "Build docs for master branch") { |b|
     options[:docs] = b
+  }
+  opts.on("--platform PLATFORM", "Architecture to build for") { |p|
+    options[:platform] = p
   }
 }
 
@@ -208,7 +220,25 @@ if distros.empty?
   raise "Invalid distro"
 end
 
-docker_build = "docker build --progress=plain"
+platform = options[:platform] || ""
+docker_platform = ""
+if platform == "amd64" || platform == ""
+  # Do nothing, keep as empty strings.
+
+  # I think we could pass an appropriate --platform option without
+  # breaking anything (and without redundantly rebuilding any local
+  # docker images) but do not want to test it at this time.
+
+  # This means we assume that the user is running on an x86-64 system.
+elsif platform == "arm64"
+  docker_platform = "--platform=linux/arm64/v8"
+else
+  # Adding new platforms should be as easy as adding another elsif
+  # clause.
+  raise "Unrecognized platform option #{platform}"
+end
+
+docker_build = "docker build #{docker_platform} --progress=plain"
 
 # First build the base image
 Dir.chdir("rdbcheckout") {
@@ -284,7 +314,7 @@ if options[:support] == :yes
 
     puts "Copying dist file into one pkgs directory..."
     FileUtils.mkdir_p("artifacts/pkgs")
-    cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-focal-dist:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.tgz') /artifacts/pkgs\""
+    cmd = "docker run #{docker_platform} --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-focal-dist:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.tgz') /artifacts/pkgs\""
     puts "Executing #{cmd}"
     system cmd or raise "copy-dist fail"
     puts "Done copying dist."
@@ -305,7 +335,7 @@ if options[:support] == :yes
         puts "Copying dir for distro #{distro}..."
         FileUtils.mkdir_p("artifacts/#{distro}")
 
-        system "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy-dirs #{distro}-package fail"
+        system "docker run #{docker_platform} --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} cp -R /platform/rethinkdb/build/packages /artifacts/#{distro}" or raise "copy-dirs #{distro}-package fail"
       }
       puts "Done copying dirs."
     elsif options[:copy] == :pkgs
@@ -316,7 +346,7 @@ if options[:support] == :yes
         FileUtils.mkdir_p("artifacts/pkgs")
         FileUtils.mkdir("artifacts/pkg_stage")
 
-        cmd = "docker run --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.deb' -or -name '*.rpm') /artifacts/pkg_stage\""
+        cmd = "docker run #{docker_platform} --rm -v #{basedir}/artifacts:/artifacts samrhughes/rdb-#{distro}-package:#{commit} bash -c \"cp \\$(find /platform/rethinkdb/build/packages -name '*.deb' -or -name '*.rpm') /artifacts/pkg_stage\""
         puts "Executing #{cmd}"
         system cmd or raise "copy-pkgs #{distro}-package fail"
 

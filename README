@@ -29,9 +29,24 @@ EXAMPLE USAGE:
     # view rethinkdb_2.4.5~0resolute_amd64.deb
     ls artifacts/pkgs
 
+    # Try to make an arm build (but encounter an error in re2?).
+    ./setup.rb -c v2.4.5 --v245support --packages --test-pkgs --copy-pkgs --distro resolute --platform arm64
+
 BUILD REQUIREMENTS:
 
    You need Ruby and Docker.
+
+   To make ARM builds on an x86 system, you will need Docker to
+   support running under ARM.  You might need to run something like
+   these commands -- or, if these are out of date, search online for
+   instructions.
+
+    sudo apt-get install qemu-system binfmt-support qemu-user-static
+
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+    # Should print "aarch64"
+    docker run --platform=linux/arm64/v8 --rm -t ubuntu uname -m
 
 REPRODUCIBILITY:
 
